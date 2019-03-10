@@ -58,10 +58,10 @@ const ObjectValidatorEditor = {
     /**
      * Add Validators
      * @param {{name: String, validator: Function}[]} $validators - Array of custom validators.
-     * @param {string} $validators[].name - The error of this validator.
+     * @param {string} $validators[].name - The name of this validator.
      * @param {string} $validators[].error - The error of this validator.
-     * @param {string} $validators[].validator - The error of this validator.
-     * @param {string} $validators[].extendValidator - The error of this validator.
+     * @param {string} $validators[].validator - The function of this validator.
+     * @param {string} $validators[].extendValidator - The extension of this validator.
      */
 
     addValidators($validators) {
@@ -338,7 +338,7 @@ class Validator {
 Validator.prototype.$data = {
     name: '',
     error: '',
-    validator: '',
+    validator: null,
     extendValidator: null
 };
 
