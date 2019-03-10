@@ -309,37 +309,80 @@ class Validator {
      */
 
     constructor(name, validator = null, error = null) {
-        this.$data.name = name;
-        if (typeof validator === 'function') this.$data.validator = validator;
-        if (typeof error === 'string') this.$data.error = error;
+        if (typeof name === 'object') {
+            this.$data = name;
+            this.add();
+        } else {
+            this.$data.name = name;
+            if (typeof validator === 'function') this.$data.validator = validator;
+            if (typeof error === 'string') this.$data.error = error;
+
+            if (validator !== null && error !== null) {
+                this.add();
+            }
+        }
 
         return this;
     }
 
+    /**
+     * Set Validator
+     * @param {function} validator
+     */
+
     validator(validator) {
         this.$data.validator = validator;
+        this.add();
     }
 
+    /**
+     * Set Validator Error
+     * @param {string} error
+     * @return {Validator}
+     */
     error(error) {
         this.$data.error = error;
+        return this;
     }
 
+    /**
+     * Set Validator Data
+     * @param {string} key
+     * @param {*} value
+     * @return {Validator}
+     */
     set(key, value) {
         this.$data[key] = value;
+        return this;
     }
 
-    listen() {
+    /**
+     * Add to validators
+     */
+
+    add() {
         ObjectValidatorEditor.addValidators([
             this.$data
         ]);
+    }
+
+    /**
+     * Returns Validator $data
+     * @return {object} Validator.$data
+     */
+    data() {
+        return this.$data;
+    }
+
+    static bulk(validators) {
+        ObjectValidatorEditor.addValidators(validators);
     }
 }
 
 Validator.prototype.$data = {
     name: '',
     error: '',
-    validator: null,
-    extendValidator: null
+    validator: null
 };
 
-module.exports = {validate, ObjectValidator, ObjectValidatorEditor, Validator};
+module.exports = {validate, Validator};

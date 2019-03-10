@@ -1,16 +1,27 @@
 const {validate, Validator} = require('./src/ObjectValidator');
 
-new Validator('email', function (value, option) {
-    return value.includes('@')
-}).listen();
+new Validator('email', (value) => {
+    return value.includes('@');
+}, 'email is not correct!');
+
+new Validator('email').error('Email is not correct ooo!').add();
+
+new Validator({
+    name: 'hasComma',
+    error: ':param has no comma!',
+    validator(value) {
+        return value.includes(',');
+    }
+});
 
 let $object = {
-    email: "sky@gmail.com",
+    email: "skygmail.com",
     username: "sky",
     password: "123456",
 };
 
 let $rules = {
+    '***': {hasComma: true},
     email: {email: true},
     username: {minLength: 4}
 };
