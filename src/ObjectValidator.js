@@ -338,7 +338,7 @@ class Validator {
 Validator.prototype.$data = {
     name: '',
     error: '',
-    validator: null,
+    validator: '',
     extendValidator: null
 };
 
