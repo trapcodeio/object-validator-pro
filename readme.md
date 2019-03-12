@@ -71,7 +71,7 @@ check = validate(data, rules);
 // log: [ 'username', 'Username is not typeOf string' ]
 ```
 
-##### Overriding default onEachError function
+##### Overriding default `onEachError` function
 Default `onEachError` function can be overwritten and can also be set per validation. which ever you choose depending on the project.
 
 ``Validator.overrideDefaultFunction(key, function)``
