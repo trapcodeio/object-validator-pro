@@ -1,4 +1,3 @@
-// const _ = require('lodash');
 const _merge = require('lodash/merge');
 const _extend = require('lodash/extend');
 const _startCase = require('lodash/startCase');
