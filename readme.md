@@ -135,7 +135,7 @@ The form being validated is also passed to your callback function.
 
 ```javascript
 check = validate(data, rules, {
-    yes () {
+    yes ($data) {
         console.log($data);
         console.log('Yes i passed all!!');
     }

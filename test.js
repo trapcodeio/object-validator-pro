@@ -29,7 +29,8 @@ data = {
 };
 
 check = validate(data, rules, {
-    yes () {
+    yes ($data) {
+        console.log($data);
         console.log('Yes i passed all!!');
     }
 });
