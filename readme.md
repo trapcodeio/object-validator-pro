@@ -58,7 +58,7 @@ const {validate, Validator} = require("object-validator-pro");
 
 `check` returned false and `validate` function logs an array `on each error`,
 
- Array[0]: Failed Object key, Array[1]: Error message.
+ `Array[0]`: Failed Object key, `Array[1]`: Error message.
  
 To check if `*` (wildcard) affected `data.username`, it should return an error when username is not a `string`
  
