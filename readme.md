@@ -28,7 +28,7 @@ yarn add object-validator-pro
 const {validate, Validator} = require("object-validator-pro");
 ```
 
-##### Simple Form Data Validation
+#### Simple Form Data Validation
 ```javascript
     // Object to validate
     let data = {
@@ -71,7 +71,7 @@ check = validate(data, rules);
 // log: [ 'username', 'Username is not typeOf string' ]
 ```
 
-##### Overriding default `onEachError` function
+#### Overriding default `onEachError` function
 Default `onEachError` function can be overwritten and can also be set per validation. which ever you choose depending on the project.
 
 ``Validator.overrideDefaultFunction(key, function)``
