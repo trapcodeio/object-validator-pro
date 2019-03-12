@@ -1,6 +1,16 @@
 let validators = {
     must(value) {
-        return value.length > 0;
+        if (typeof value === "undefined") {
+            return false;
+        } else if (typeof value === 'string' || Array.isArray(value)) {
+            return value.length > 0
+        }
+
+        return true;
+    },
+
+    typeOf(value, option) {
+        return typeof value === option;
     },
 
     min(value, option) {

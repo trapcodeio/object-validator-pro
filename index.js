@@ -1,4 +1,3 @@
-const _merge = require('lodash/merge');
 const _extend = require('lodash/extend');
 const _startCase = require('lodash/startCase');
 
@@ -6,6 +5,10 @@ let validators = require('./src/validators');
 let errorMessages = require('./src/errors');
 
 let validatorExtenders = {};
+
+const config = {
+    wildcard: '*'
+};
 
 
 let ObjectValidatorFunctions = {
@@ -17,8 +20,10 @@ let ObjectValidatorFunctions = {
 
     /**
      * Before Validation Function
+     * @return {boolean}
      */
     beforeValidation() {
+        return true;
     },
 
     /**
@@ -41,6 +46,7 @@ let ObjectValidatorEngine = {
      * @return {string}
      */
     parseMessage($rule, $name, $option) {
+        // console.log(arguments);
         let msg = errorMessages.default;
 
         if (errorMessages.hasOwnProperty($rule)) {
@@ -86,30 +92,6 @@ const ObjectValidatorEditor = {
                 validators[validator.name] = validator.validator;
             }
         }
-    },
-
-    /**
-     * Override Validator Default Function
-     * @param {string} key
-     * @param {function} value
-     */
-
-    overrideDefaultFunction(key, value) {
-        if (ObjectValidatorFunctions.hasOwnProperty(key)) {
-            ObjectValidatorFunctions[key] = value
-        }
-    },
-
-    /**
-     * Override Validator Default Functions
-     * @param {array} functions
-     */
-    overrideDefaultFunctions(functions) {
-        let keys = Object.keys(functions);
-        for (let i = 0; i < keys.length; i++) {
-            let _function = keys[i];
-            ObjectValidatorEditor.overrideDefaultFunction(_function, functions[_function]);
-        }
     }
 };
 
@@ -153,7 +135,10 @@ class ObjectValidator {
      * @return {ObjectValidator}
      */
     then(functions) {
-        this.functions = _merge(ObjectValidatorFunctions, functions);
+        if (typeof functions === 'function')
+            functions = {yes: functions};
+
+        this.functions = _extend({}, ObjectValidatorFunctions, functions);
         return this;
     }
 
@@ -175,34 +160,41 @@ class ObjectValidator {
      * @return {boolean}
      */
     runValidation() {
-        let vm;
         let $object = this.data;
         let validateWith = this.validateWith;
-        let functions = this.functions || ObjectValidatorFunctions;
+
+        if (this.functions === undefined) {
+            this.functions = ObjectValidatorFunctions;
+        }
+
+        let functions = this.functions;
 
         // Set Found Error to stop once true. One Error at a time.
         let foundError = false;
-        vm = this;
 
+        if (validateWith.hasOwnProperty(config.wildcard)) {
+            let objectKeys = Object.keys($object);
+            let newValidateWith = {};
 
-        if (validateWith.hasOwnProperty('***')) {
-            const objectKeys = Object.keys($object);
             for (let i = 0; i < objectKeys.length; i++) {
-                const objectKey = objectKeys[i];
-
+                let objectKey = objectKeys[i];
                 if (typeof validateWith[objectKey] === 'undefined') {
-                    validateWith[objectKey] = validateWith['***'];
+                    newValidateWith[objectKey] = validateWith[config.wildcard];
                 } else {
-                    validateWith[objectKey] = _extend({}, validateWith['***'], validateWith[objectKey])
+                    newValidateWith[objectKey] = _extend({}, validateWith[config.wildcard], validateWith[objectKey])
                 }
 
             }
-            delete validateWith['***'];
+
+            validateWith = newValidateWith;
         }
 
 
         // Run before validation function
-        functions.beforeValidation();
+        const $beforeValidation = functions.beforeValidation();
+        if ($beforeValidation === false) {
+            return false;
+        }
 
         const validateWithKeys = Object.keys(validateWith);
 
@@ -211,7 +203,7 @@ class ObjectValidator {
 
             if ($object.hasOwnProperty(param)) {
                 let rules = validateWith[param];
-                const rulesKeys = Object.keys(rules);
+                let rulesKeys = Object.keys(rules);
 
 
                 for (let ii = 0; ii < rulesKeys.length; ii++) {
@@ -242,22 +234,27 @@ class ObjectValidator {
                         if (!isValid) {
                             foundError = true;
                             if (functions.hasOwnProperty('onEachError')) {
-                                if (!rules.hasOwnProperty('name')) {
-                                    rules['name'] = _startCase(param)
+                                let name = _startCase(param);
+                                if (rules.hasOwnProperty('name')) {
+                                    name = rules.name;
                                 }
-                                msg = ObjectValidatorEngine.parseMessage(rule, rules.name, options);
+
+
+                                msg = ObjectValidatorEngine.parseMessage(rule, name, options);
                                 functions.onEachError(param, msg);
                             }
 
                             return false;
                         }
                     }
-                }
 
-                if (foundError) {
-                    return false;
+                    if (foundError) {
+                        return false;
+                    }
                 }
             }
+
+
         }
 
         if (functions.hasOwnProperty('yes')) {
@@ -277,14 +274,18 @@ ObjectValidator.prototype.functions = undefined;
  * @function
  * @param {object} $object - Object to be validator
  * @param {object} $rules - Rules for validation
- * @param {boolean} [$returnValidator=false] - Should return validator.
+ * @param {boolean|Object|Function} $returnValidator - Should return validator.
  * @return {boolean|ObjectValidator}
  */
+
 const validate = function ($object, $rules, $returnValidator = false) {
     const validator = new ObjectValidator($object).rules($rules);
-    if (!$returnValidator) {
+    if (typeof $returnValidator === 'boolean' && !$returnValidator) {
         return validator.validate();
+    } else if (typeof $returnValidator === 'object' || typeof $returnValidator === 'function') {
+        return validator.then($returnValidator).validate()
     }
+
     return validator;
 };
 
@@ -362,12 +363,36 @@ class Validator {
      * Returns Validator $data
      * @return {object} Validator.$data
      */
-    data() {
+    getData() {
         return this.$data;
     }
 
     static bulk(validators) {
         ObjectValidatorEditor.addValidators(validators);
+    }
+
+    /**
+     * Override Validator Default Function
+     * @param {string} key
+     * @param {function} value
+     */
+
+    static overrideDefaultFunction(key, value) {
+        if (ObjectValidatorFunctions.hasOwnProperty(key)) {
+            ObjectValidatorFunctions[key] = value
+        }
+    }
+
+    /**
+     * Override Validator Default Functions
+     * @param {object} functions
+     */
+    static overrideDefaultFunctions(functions) {
+        let keys = Object.keys(functions);
+        for (let i = 0; i < keys.length; i++) {
+            let _function = keys[i];
+            Validator.overrideDefaultFunction(_function, functions[_function]);
+        }
     }
 }
 
