@@ -97,7 +97,6 @@ check = validate(data, rules, {
         console.log('Custom onEach Error ===> ', '{' + param + '}', msg)
     }
 });
-
 // returns: false
 // Custom onEach Error ===>  {username} Username is not typeOf string
 
@@ -110,6 +109,61 @@ check = validate(data, rules);
 // returns: false
 // log: {password} Password is too short. (Min. 10 characters)
 ```
+
+Validator moves to password after username has been set to string and no longer has errors.
+
+Now lets set proper data to return true.
+```javascript
+data = {
+    username: 'NodeJs',
+    password: '1234567890'
+};
+
+check = validate(data, rules, function ($data) {
+    console.log($data);
+    console.log('Yes i passed all!!');
+});
+
+// returns: true;
+// log: { username: 'NodeJs', password: '1234567890' }
+// log: Yes i passed all!!
+```
+
+When all validation functions are passed without errors you can set a callback function
+as the third parameter of the `validate` function as seen above or an object containing a `yes` function as seen below.
+The form being validated is also passed to your callback function.
+
+```javascript
+check = validate(data, rules, {
+    yes () {
+        console.log($data);
+        console.log('Yes i passed all!!');
+    }
+}); 
+```
+Works just like the direct function method and useful when setting other validation functions.
+
+`validate` function 3rd parameter can accept an object of default functions just like this.
+```javascript
+let validatorOptions = {
+   yes() {},
+
+   beforeValidation() {
+       return true;
+   },
+
+   onEachError(param, msg) {}
+};
+
+check = validate(data, rules, validatorOptions);
+```
+
+`yes`: will run when all validation is successful.
+
+`beforeValidation`: Runs before validation, Stops validation if returns false.
+
+`onEachError`: Callback on each error.
+
 #### Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
