@@ -164,6 +164,43 @@ check = validate(data, rules, validatorOptions);
 
 `onEachError`: Callback on each error.
 
+
+#### Adding New Validation
+using the `new Validator(name, validationFn, error?)` syntax you can add or modify any validation function or error.
+Lets add a new validation called `exact` that checks if the `data` key matches some other word.
+
+`name`: Name of your new validator.
+
+`validator`: The function that runs your validation
+
+`error`: Error message to show.
+
+```javascript
+new Validator('exact', (value, option) => {
+    console.log([value, option]);
+    return false;
+}, ':param does not match :option');
+
+rules = {
+    username: {exact: 'goodString'}
+};
+
+validate(data, rules);
+
+// returns: true
+// log: [ 'NodeJs', 'goodString' ]
+// log: [ 'username', 'Username does not match goodString' ]
+
+```
+
+From the results above you can see that `data.username` was checked with `exact` function added earlier.
+
+Also you can notice the `:param` and `:option` in error message.
+
+`:param` if found is replaced with the `key` of the data you are validating.
+
+`:option` if found is replaced with the `value` of ' 
+ 
 #### Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
