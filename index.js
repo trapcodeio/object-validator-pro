@@ -118,6 +118,7 @@ const validate = function ($object, $rules, $returnValidator = false, $runAsyncV
     return validator;
 };
 
+
 /**
  * Run validations with async functions
  * @return {boolean|ObjectValidator}
