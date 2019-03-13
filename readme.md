@@ -20,13 +20,15 @@ yarn add object-validator-pro
 
 ### Usage
 ```javascript
-/**
-* @const validate - Function to run validation
-* @const Validator - Class to add new validators
-*/
-
-const {validate, Validator} = require("object-validator-pro");
+const {validate, validateAsync, Validator} = require("object-validator-pro");
 ```
+
+`vaidate`: Function to run validations, returns `boolean`
+
+`validateAsync`: Function to run Async validations, returns `Promise<boolean>`
+
+`new Validator`: to create/add your custom validators.
+
 
 #### Simple Form Data Validation
 ```javascript
@@ -54,6 +56,12 @@ const {validate, Validator} = require("object-validator-pro");
     
     // returns: false
     // log: [ 'password', 'Password is too short. (Min. 10 characters)' ]
+    
+    // if rules has an Async validator use
+    
+    validateAsync(data, rules).then((isValid) => {
+        // isValid holds the result: boolean;
+    });
 ```
 
 `check` returned false and `validate` function logs an array `on each error`,
@@ -70,6 +78,14 @@ check = validate(data, rules);
 // returns: false
 // log: [ 'username', 'Username is not typeOf string' ]
 ```
+
+#### Super Rules
+These are rules that are defined and should not be overwritten.
+
+`*`: validates all object keys against every validator defined in its value.
+
+`:skip`: accepts a `boolean` or a `function(value?)` that returns a `boolean`, 
+if `false` that particular validation will be skipped!
 
 #### Overriding default `onEachError` function
 Default `onEachError` function can be overwritten and can also be set per validation. which ever you choose depending on the project.
@@ -166,6 +182,7 @@ check = validate(data, rules, validatorOptions);
 
 
 #### Adding New Validation
+
 using the `new Validator(name, validationFn, error?)` syntax you can add or modify any validation function or error.
 Lets add a new validation called `exact` that checks if the `data` key matches some other word.
 
@@ -220,13 +237,103 @@ validate(data, rules);
 // returns: false
 // log: [ 'NodeJs', 'goodString' ]
 // log: [ 'username', 'Something Happened with: Username' ]
-
 ```
+
+#### Adding Bulk Validation
+You can set more than one custom validators using the `Validator.addBulk(arrayOfValidators)`
+
+`Validator.data`: returns object data of a validator, works just like the `new Validator` function but returns the validators data instead of setting them. 
+
+See example below to see how it works.
+
+```javascript
+// Using Validator.data method
+let emailValidator = Validator.data('isEmail', (value, option) => {
+    return (typeof value === "string" && value.length>5 && value.includes('@'));
+}, ':param does not look like an email');
+
+let arrayOfValidators = [
+    // Using Object Method
+    {
+        name: 'exact',
+        error: ':param is not what we are expecting!',
+        validator: (value, option) => {
+            return value === option;
+        }
+    },
+
+    // Using Object Method
+    {
+        name: 'strongPassword',
+        error: ':param is not strong. no Capital letter found!',
+        validator: (value) => {
+            return value.toLowerCase() !== value;
+        }
+    },
+
+    // Using Validator.data method Object from above
+    emailValidator,
+];
+
+console.log(arrayOfValidators);
+
+/*
+returns: =====>
+[ { name: 'exact',
+    error: ':param is not what we are expecting!',
+    validator: [Function: validator] },
+  { name: 'strongPassword',
+    error: ':param is not strong. no Capital letter found!',
+    validator: [Function: validator] },
+  { name: 'isEmail',
+    error: ':param does not look like an email',
+    validator: [Function] } ]
+*/
+```
+
+The data return by `emailValidator` in the console results is an object that is the same with the Object declared in `arrayOfValidators` 
+So you can populate `arrayOfValidators` anywhich way you find preferable.
+
+```javascript
+// Add to validators.
+Validator.addBulk(arrayOfValidators);
+
+data = {
+    email: 'john@mywebsite.com',
+    password: "123456",
+};
+
+rules = {
+    "*": {typeOf: "string"},
+    email: {
+        isEmail: true,
+        exact: 'admin@mywebsite.com'
+    },
+    password: {strongPassword: true}
+};
+
+
+validate(data, rules);
+// returns: false
+//log: [ 'email', 'Email is not what we are expecting!' ]
+// because: our rule "exact" expects email to be exactly "admin@mywebsite.com"
+
+data.email = "admin@mywebsite.com";
+
+validate(data, rules);
+// returns: false
+//log [ 'password', 'Password is not strong. no Capital letter found!' ]
+// because: our rule "strongPassword" requires password to have a capital letter
+
+
+data.password = "HELLO123456";
+validate(data, rules);
+// returns: true
+``` 
 
  
 #### Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
+Pull requests are VERY welcomed. For major changes, please open an issue first to discuss what you would like to change.
 Please make sure to update tests as appropriate.
 
 #### License
