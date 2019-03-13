@@ -171,9 +171,17 @@ Lets add a new validation called `exact` that checks if the `data` key matches s
 
 `name`: Name of your new validator.
 
-`validator`: The function that runs your validation
+`validator`: The function that runs your validation (can be `async`)
 
 `error`: Error message to show.
+
+
+The `validator` is passed two arguments on validation
+
+
+`value`: The value of the object key being validated i.e `data[value]`.
+
+`option`: The value of the validation rule passed. 
 
 ```javascript
 new Validator('exact', (value, option) => {
@@ -182,7 +190,7 @@ new Validator('exact', (value, option) => {
 }, ':param does not match :option');
 
 rules = {
-    username: {exact: 'goodString'}
+    username: {minLength: 20, exact: 'goodString'}
 };
 
 validate(data, rules);
@@ -190,7 +198,6 @@ validate(data, rules);
 // returns: true
 // log: [ 'NodeJs', 'goodString' ]
 // log: [ 'username', 'Username does not match goodString' ]
-
 ```
 
 From the results above you can see that `data.username` was checked with `exact` function added earlier.
@@ -199,7 +206,23 @@ Also you can notice the `:param` and `:option` in error message.
 
 `:param` if found is replaced with the `key` of the data you are validating.
 
-`:option` if found is replaced with the `value` of ' 
+`:option` if found is replaced with the `value` of the validation rule passed. 
+
+This enables you create nice custom errors for your validations out of the box.
+
+lets modify errors of validations that exists already.
+
+```javascript
+new Validator('exact').error('Something Happened with: :param').save();
+
+validate(data, rules);
+
+// returns: false
+// log: [ 'NodeJs', 'goodString' ]
+// log: [ 'username', 'Something Happened with: Username' ]
+
+```
+
  
 #### Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

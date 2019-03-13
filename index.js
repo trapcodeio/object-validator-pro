@@ -72,7 +72,6 @@ const ObjectValidatorEditor = {
      * @param {string} $validators[].validator - The function of this validator.
      * @param {string} $validators[].extendValidator - The extension of this validator.
      */
-
     addValidators($validators) {
         if (!Array.isArray($validators) && typeof $validators === 'object') {
             $validators = [$validators];
@@ -159,7 +158,7 @@ class ObjectValidator {
      * Run Validation Object
      * @return {boolean}
      */
-    runValidation() {
+    async runValidation() {
         let $object = this.data;
         let validateWith = this.validateWith;
 
@@ -230,6 +229,11 @@ class ObjectValidator {
                             isValid = validators[rule]($object[param], options);
                         }
 
+                        // check if promise!
+                       if( typeof  isValid === 'object' && typeof isValid.then === 'function'){
+                           isValid = await  isValid;
+                       }
+
 
                         if (!isValid) {
                             foundError = true;
@@ -253,8 +257,6 @@ class ObjectValidator {
                     }
                 }
             }
-
-
         }
 
         if (functions.hasOwnProperty('yes')) {
@@ -277,9 +279,9 @@ ObjectValidator.prototype.functions = undefined;
  * @param {boolean|Object|Function} $returnValidator - Should return validator.
  * @return {boolean|ObjectValidator}
  */
-
 const validate = function ($object, $rules, $returnValidator = false) {
     const validator = new ObjectValidator($object).rules($rules);
+
     if (typeof $returnValidator === 'boolean' && !$returnValidator) {
         return validator.validate();
     } else if (typeof $returnValidator === 'object' || typeof $returnValidator === 'function') {
@@ -305,14 +307,14 @@ class Validator {
     constructor(name, validator = null, error = null) {
         if (typeof name === 'object') {
             this.$data = name;
-            this.add();
+            this.save();
         } else {
             this.$data.name = name;
             if (typeof validator === 'function') this.$data.validator = validator;
             if (typeof error === 'string') this.$data.error = error;
 
             if (validator !== null && error !== null) {
-                this.add();
+                this.save();
             }
         }
 
@@ -326,7 +328,7 @@ class Validator {
 
     validator(validator) {
         this.$data.validator = validator;
-        this.add();
+        this.save();
     }
 
     /**
@@ -353,7 +355,7 @@ class Validator {
     /**
      * Add to validators
      */
-    add() {
+    save() {
         ObjectValidatorEditor.addValidators([
             this.$data
         ]);
