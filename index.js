@@ -42,24 +42,27 @@ class AsyncObjectValidator extends ObjectValidator {
 
                 let skipThis = false;
 
-                if (rules.hasOwnProperty(':skip')) {
-                    skipThis = rules[':skip'];
+                if (rules.hasOwnProperty(ObjectValidator.config.skip)) {
+                    skipThis = rules[ObjectValidator.config.skip];
 
                     if (typeof skipThis === 'function') {
                         skipThis = skipThis($object[param])
                     }
+
+                    delete rules[ObjectValidator.config.skip]
                 }
 
 
                 if(!skipThis){
+
                     for (let ii = 0; ii < rulesKeys.length; ii++) {
                         let rule = rulesKeys[ii];
                         let options = rules[rule];
                         let isValid;
 
-
                         if (validators.hasOwnProperty(rule)) {
                             isValid = this.___validationIsValid(rule, param, options);
+
 
                             // check if promise!
                             if (typeof isValid === 'object' && typeof isValid.then === 'function') {

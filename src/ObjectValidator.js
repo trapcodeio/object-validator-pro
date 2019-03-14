@@ -7,7 +7,8 @@ let validatorExtenders = {};
 
 const config = {
     wildcard: '*',
-    rulesWildcard: '**'
+    rulesWildcard: '**',
+    skip: ':skip',
 };
 
 
@@ -83,10 +84,9 @@ const ObjectValidatorEditor = {
                 errorMessages[validator.name] = validator.error
             }
 
-            if (validator.hasOwnProperty('extendValidator') &&
-                validators.hasOwnProperty(validator.name)) {
+            if (typeof validator['extendValidator'] === 'function' && typeof validator['name'] === 'string') {
                 validatorExtenders[validator.name] = validator.extendValidator;
-            } else if (validator.hasOwnProperty('validator')) {
+            } else if (typeof validator['validator'] === 'function') {
                 validators[validator.name] = validator.validator;
             }
         }
@@ -106,6 +106,10 @@ class ObjectValidator {
      * */
     constructor($object) {
         return this.setObject($object);
+    }
+
+    static get config() {
+        return config;
     }
 
     /**
@@ -189,7 +193,7 @@ class ObjectValidator {
         }
 
         if (validateWith.hasOwnProperty(config.rulesWildcard)) {
-            const  wildcardRules = validateWith[config.rulesWildcard];
+            const wildcardRules = validateWith[config.rulesWildcard];
             delete validateWith[config.rulesWildcard];
 
             let objectKeys = Object.keys(validateWith);
@@ -235,15 +239,17 @@ class ObjectValidator {
 
                 let skipThis = false;
 
-                if (rules.hasOwnProperty(':skip')) {
-                    skipThis = rules[':skip'];
+                if (rules.hasOwnProperty(config.skip)) {
+                    skipThis = rules[config.skip];
 
                     if (typeof skipThis === 'function') {
                         skipThis = skipThis($object[param])
                     }
+
+                    delete rules[config.skip];
                 }
 
-                if(!skipThis){
+                if (!skipThis) {
                     for (let ii = 0; ii < rulesKeys.length; ii++) {
                         let rule = rulesKeys[ii];
                         let options = rules[rule];
@@ -313,7 +319,7 @@ class ObjectValidator {
 }
 
 ObjectValidator.prototype.data = {};
-ObjectValidator.prototype.validateWith = [];
+ObjectValidator.prototype.validateWith = {};
 ObjectValidator.prototype.functions = undefined;
 
 /**
@@ -350,7 +356,7 @@ class Validator {
     }
 
     /**
-     * Set Validatoris not an email
+     * Set Validator
      * @param {function} validator
      */
 
@@ -416,7 +422,7 @@ class Validator {
      * @param validator
      * @param error
      */
-    static data(name, validator, error = null) {
+    static make(name, validator, error = null) {
         return new Validator(name, validator, error, false).getData();
     }
 

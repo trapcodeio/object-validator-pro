@@ -255,7 +255,7 @@ let validatorOptions = {
 check = validate(data, rules, validatorOptions);
 ```
 
-`yes`: will run when all validation is successful.
+`yes`: will run when all validation is successful. `check` will still return `boolean`.    
 
 `beforeValidation`: Runs before validation, Stops validation if returns false.
 
@@ -264,12 +264,13 @@ check = validate(data, rules, validatorOptions);
 
 #### Adding New Validation
 
-using the `new Validator(name, validationFn, error?)` syntax you can add or modify any validation function or error.
+using the `new Validator(name, validationFn, error?)` syntax you can add or modify any validator or error.
+
 Lets add a new validation called `exact` that checks if the `data` key matches some other word.
 
 `name`: Name of your new validator.
 
-`validator`: The function that runs your validation (can be `async`)
+`validator`: The function that runs your validation (can be `async` when using `validateAsync`)
 
 `error`: Error message to show.
 
@@ -298,17 +299,17 @@ validate(data, rules);
 // log: [ 'username', 'Username does not match goodString' ]
 ```
 
-From the results above you can see that `data.username` was checked with `exact` function added earlier.
+`data.username` was checked with `exact` function added earlier.
 
-Also you can notice the `:param` and `:option` in error message.
+Notice the `:param` and `:option` in error message?
 
-`:param` if found is replaced with the `key` of the data you are validating.
+`:param` if present is replaced with the `key` of the data you are validating.
 
-`:option` if found is replaced with the `value` of the validation rule passed. 
+`:option` if present is replaced with the `value` of the validation rule passed. 
 
 This enables you create nice custom errors for your validations out of the box.
 
-lets modify errors of validations that exists already.
+You can also modify an error of a validator that already exists.
 
 ```javascript
 new Validator('exact').error('Something Happened with: :param').save();
@@ -323,13 +324,13 @@ validate(data, rules);
 #### Adding Bulk Validation
 You can set more than one custom validators using the `Validator.addBulk(arrayOfValidators)`
 
-`Validator.data`: returns object data of a validator, works just like the `new Validator` function but returns the validators data instead of setting them. 
+`Validator.make`: returns object data of a validator, works just like the `new Validator` function but returns the validators data instead of setting them. 
 
 See example below to see how it works.
 
 ```javascript
-// Using Validator.data method
-let emailValidator = Validator.data('isEmail', (value, option) => {
+// Using Validator.make method
+let emailValidator = Validator.make('isEmail', (value, option) => {
     return (typeof value === "string" && value.length>5 && value.includes('@'));
 }, ':param does not look like an email');
 
@@ -352,7 +353,7 @@ let arrayOfValidators = [
         }
     },
 
-    // Using Validator.data method Object from above
+    // Using Validator.make method Object from above
     emailValidator,
 ];
 
