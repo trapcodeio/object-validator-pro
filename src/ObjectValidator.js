@@ -90,8 +90,6 @@ const ObjectValidatorEditor = {
                 validators[validator.name] = validator.validator;
             }
         }
-
-        return validators;
     }
 };
 
