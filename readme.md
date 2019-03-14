@@ -80,12 +80,29 @@ check = validate(data, rules);
 ```
 
 #### Super Rules
-These are rules that are defined and should not be overwritten.
-
 `*`: validates all object keys against every validator defined in its value.
 
 `:skip`: accepts a `boolean` or a `function(value?)` that returns a `boolean`, 
 if `false` that particular validation will be skipped!
+
+#### Default Rules
+These are default define rules with their errors messages.
+
+`{must: true}`: _":param is required."_
+
+`{typeOf: 'string'}`: _":param is not typeOf :option"_
+
+`{min: 5}`: _":param is too small. (Min. :option)"_
+
+`{max: 10}`: _":param is too big. (Max. :option)"_
+
+`{minLength: 5}`: _":param is too short. (Min. :option characters)"_
+
+`{maxLength: 10}`: _":param is too long. (Max. :option characters)"_,
+
+`{selectMin: 5}`: _"Select at-least :option :param."_,
+
+`{selectMax: 10}`: _"Select at-most :option :param."_,
 
 #### Overriding default `onEachError` function
 Default `onEachError` function can be overwritten and can also be set per validation. which ever you choose depending on the project.
