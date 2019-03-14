@@ -175,7 +175,7 @@ Default `onEachError` function can be overwritten and can also be set per valida
 
 `key`: Name of default function to override.
 
-`function`: => Function to be replaced with. 
+`function`: Function to be replaced with. 
 
 ```javascript
 Validator.overrideDefaultFunction('onEachError', (param, msg) => {
@@ -198,7 +198,7 @@ check = validate(data, rules, {
 // Custom onEach Error ===>  {username} Username is not typeOf string
 
 
-// With custom onEachError results to default onEachError set above.
+// Without custom onEachError, it reverts back to default onEachError set above.
 
 data.username = 'NodeJs';
 check = validate(data, rules);
@@ -240,7 +240,7 @@ check = validate(data, rules, {
 ```
 Works just like the direct function method and useful when setting other validation functions.
 
-`validate` function 3rd parameter can accept an object of default functions just like this.
+`validate` 3rd parameter can accept an `object` of default functions just like this.
 ```javascript
 let validatorOptions = {
    yes() {},
