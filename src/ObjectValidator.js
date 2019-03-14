@@ -6,7 +6,8 @@ let errorMessages = require('./errors');
 let validatorExtenders = {};
 
 const config = {
-    wildcard: '*'
+    wildcard: '*',
+    rulesWildcard: '**'
 };
 
 
@@ -45,7 +46,6 @@ let ObjectValidatorEngine = {
      * @return {string}
      */
     parseMessage($rule, $name, $option) {
-        // console.log(arguments);
         let msg = errorMessages.default;
 
         if (errorMessages.hasOwnProperty($rule)) {
@@ -170,6 +170,7 @@ class ObjectValidator {
 
         if (validateWith.hasOwnProperty(config.wildcard)) {
             let objectKeys = Object.keys($object);
+
             let newValidateWith = {};
 
             for (let i = 0; i < objectKeys.length; i++) {
@@ -180,6 +181,24 @@ class ObjectValidator {
                     newValidateWith[objectKey] = _extend({}, validateWith[config.wildcard], validateWith[objectKey])
                 }
 
+            }
+
+            validateWith = _extend({}, validateWith, newValidateWith);
+            delete validateWith[config.wildcard];
+
+        }
+
+        if (validateWith.hasOwnProperty(config.rulesWildcard)) {
+            const  wildcardRules = validateWith[config.rulesWildcard];
+            delete validateWith[config.rulesWildcard];
+
+            let objectKeys = Object.keys(validateWith);
+            let newValidateWith = {};
+
+
+            for (let i = 0; i < objectKeys.length; i++) {
+                let objectKey = objectKeys[i];
+                newValidateWith[objectKey] = _extend({}, wildcardRules, validateWith[objectKey])
             }
 
             validateWith = newValidateWith;
@@ -214,36 +233,36 @@ class ObjectValidator {
                 let rules = validateWith[param];
                 let rulesKeys = Object.keys(rules);
 
+                let skipThis = false;
 
-                for (let ii = 0; ii < rulesKeys.length; ii++) {
-                    let rule = rulesKeys[ii];
-                    let options = rules[rule];
-                    let isValid, checkThis;
+                if (rules.hasOwnProperty(':skip')) {
+                    skipThis = rules[':skip'];
 
-
-                    checkThis = true;
-
-                    if (rules.hasOwnProperty(':skip')) {
-                        checkThis = rules[':skip'];
-
-                        if (typeof checkThis === 'function') {
-                            checkThis = checkThis($object[param])
-                        }
+                    if (typeof skipThis === 'function') {
+                        skipThis = skipThis($object[param])
                     }
+                }
+
+                if(!skipThis){
+                    for (let ii = 0; ii < rulesKeys.length; ii++) {
+                        let rule = rulesKeys[ii];
+                        let options = rules[rule];
+                        let isValid;
 
 
-                    if (checkThis && validators.hasOwnProperty(rule)) {
-                        isValid = this.___validationIsValid(rule, param, options);
+                        if (validators.hasOwnProperty(rule)) {
+                            isValid = this.___validationIsValid(rule, param, options);
 
-                        if (!isValid) {
-                            foundError = true;
-                            this.___runOnEachError(functions, rules, rule, param, options);
+                            if (!isValid) {
+                                foundError = true;
+                                this.___runOnEachError(functions, rules, rule, param, options);
+                                return false;
+                            }
+                        }
+
+                        if (foundError) {
                             return false;
                         }
-                    }
-
-                    if (foundError) {
-                        return false;
                     }
                 }
             }

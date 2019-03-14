@@ -40,46 +40,49 @@ class AsyncObjectValidator extends ObjectValidator {
                 let rules = validateWith[param];
                 let rulesKeys = Object.keys(rules);
 
+                let skipThis = false;
 
-                for (let ii = 0; ii < rulesKeys.length; ii++) {
-                    let rule = rulesKeys[ii];
-                    let options = rules[rule];
-                    let isValid, checkThis;
+                if (rules.hasOwnProperty(':skip')) {
+                    skipThis = rules[':skip'];
 
-
-                    checkThis = true;
-
-                    if (rules.hasOwnProperty('if')) {
-                        checkThis = rules['if'];
-
-                        if (typeof checkThis == 'function') {
-                            checkThis = checkThis($object[param])
-                        }
+                    if (typeof skipThis === 'function') {
+                        skipThis = skipThis($object[param])
                     }
+                }
 
 
-                    if (checkThis && validators.hasOwnProperty(rule)) {
-                        isValid = this.___validationIsValid(rule, param, options);
+                if(!skipThis){
+                    for (let ii = 0; ii < rulesKeys.length; ii++) {
+                        let rule = rulesKeys[ii];
+                        let options = rules[rule];
+                        let isValid;
 
-                        // check if promise!
-                        if (typeof isValid === 'object' && typeof isValid.then === 'function') {
-                            isValid = await isValid;
+
+                        if (validators.hasOwnProperty(rule)) {
+                            isValid = this.___validationIsValid(rule, param, options);
+
+                            // check if promise!
+                            if (typeof isValid === 'object' && typeof isValid.then === 'function') {
+                                isValid = await isValid;
+                            }
+
+
+                            if (!isValid) {
+                                foundError = true;
+
+                                this.___runOnEachError(functions, rules, rule, param, options);
+
+                                return false;
+                            }
                         }
 
-
-                        if (!isValid) {
-                            foundError = true;
-
-                            this.___runOnEachError(functions, rules, rule, param, options);
-
+                        if (foundError) {
                             return false;
                         }
                     }
-
-                    if (foundError) {
-                        return false;
-                    }
                 }
+
+
             }
         }
 

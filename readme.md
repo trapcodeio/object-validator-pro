@@ -1,8 +1,8 @@
 ## Object-Validator-Pro
 
-Object-Validator-Pro provides a very easy api for developers to make custom validations.
+Object-Validator-Pro provides a very easy api for developers to make both **Sync** and **Async** custom validations.
 
-Also comes out of the box with 6 validators which can be overwritten easily.  
+Also comes with 8 validators out of the box which can be overwritten easily.  
 
 ### Installation
 
@@ -25,7 +25,7 @@ const {validate, validateAsync, Validator} = require("object-validator-pro");
 
 `vaidate`: Function to run validations, returns `boolean`
 
-`validateAsync`: Function to run Async validations, returns `Promise<boolean>`
+`validateAsync`: Function to run Async validations using `await`, returns `Promise<boolean>`
 
 `new Validator`: to create/add your custom validators.
 
@@ -61,14 +61,18 @@ const {validate, validateAsync, Validator} = require("object-validator-pro");
     
     validateAsync(data, rules).then((isValid) => {
         // isValid holds the result: boolean;
+        // returns: false
+        // log: [ 'password', 'Password is too short. (Min. 10 characters)' ]
     });
 ```
 
-`check` returned false and `validate` function logs an array `on each error`,
+`check` and `isValid` returned false,
+
+`validate` and `validateAsync` function logs an array `onEachError`,
 
  `Array[0]`: Failed Object key, `Array[1]`: Error message.
  
-To check if `*` (wildcard) affected `data.username`, it should return an error when username is not a `string`
+To check if `*` (wildcard) rules affected `data.username`, it should return an error when username is not a `string`
  
 ```javascript
 data.username = ['an array instead of a string'];
@@ -80,11 +84,71 @@ check = validate(data, rules);
 ```
 
 #### Super Rules
-`*`: validates all object keys against every validator defined in its value.
+`*`: (_wildcard_) validates all object keys against every validator defined in its value.
 
+`**`: (_wildcard for validators_) validates all rules keys defined against every validator defined in its value.
+
+```javascript
+// assuming we have an object:
+wildcardData = {
+    name: 'wildcard',
+    address: 'Drive 6, Astro world!',
+    mobile: '+1336d373'
+};
+
+// With rules set with both wildcards:
+wildcardTestRules = {
+    '*': {typeOf: 'string'},
+    '**': {must: true},
+
+    address: {minLength: 10},
+};
+
+// the above will be transformed to this using wildcards
+wildcardTestRules = {
+    address: {must: true, typeOf: 'string', minLength: 10},
+    name: {must: true, typeOf: 'string'},
+    mobile: {must: true, typeOf: 'string'}
+};
+
+// name and mobile was automatically added because * wildcard exists.
+// If * removed and ** still exists, will result to:
+
+wildcardTestRules = { 
+    address: { must: true, minLength: 10 } 
+}
+```
+value of `*` is added to object keys, while value of `**` is added to all **defined** rules.
+
+Notice that `wildcardTestRules.address` rules comes first when transformed before the other keys of the object.
+This is because **defined** rules runs before `*` wildcard added rules.
+
+#### Super Validators
 `:skip`: accepts a `boolean` or a `function(value?)` that returns a `boolean`, 
 if `false` that particular validation will be skipped!
+```javascript
+skipMobile= true;
 
+rules = {
+    mobile: {
+        ':skip': skipMobile,
+        'someMobileValidator': true,
+    },
+    username: {minLength: 10},
+};
+
+// mobile will not be validated because :skip is true
+// :skip can also accept a function that returns a boolean
+
+skipMobile = () => {
+    // do some check
+    return true;
+};
+
+// mobile will not be validated because :skip function returned true
+
+
+```
 #### Default Rules
 These are default define rules with their errors messages.
 
