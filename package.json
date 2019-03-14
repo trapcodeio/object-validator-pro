@@ -1,6 +1,6 @@
 {
   "name": "object-validator-pro",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Easy extendable object validator.",
   "main": "index.js",
   "scripts": {
