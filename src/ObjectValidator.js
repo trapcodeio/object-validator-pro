@@ -152,7 +152,7 @@ class ObjectValidator {
             return this.then(functions).validate();
         }
 
-        if (typeof this.runAsyncValidation === 'function') {
+        if (typeof this.___runAsyncValidation === 'function') {
             return this.___runAsyncValidation();
         }
         return this.___runValidation();
