@@ -4,6 +4,7 @@ Object-Validator-Pro provides a very easy api for developers to make both **Sync
 
 Also comes with 8 validators out of the box which can be overwritten easily.  
 
+For: **NodeJs** and **Browser** frontend.
 ### Installation
 
 Using **npm**
@@ -19,6 +20,7 @@ yarn add object-validator-pro
 ```
 
 ### Usage
+
 ```javascript
 const {validate, validateAsync, Validator} = require("object-validator-pro");
 ```
