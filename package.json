@@ -1,6 +1,6 @@
 {
   "name": "object-validator-pro",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Easy extendable object validator.",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,10 @@
     "object-validator",
     "object-validator-pro",
     "validate-object",
-    "form-validation"
+    "form-validation",
+    "validation",
+    "async",
+    "async-validator"
   ],
   "author": "TrapCode",
   "license": "ISC",
