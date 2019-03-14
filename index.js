@@ -130,4 +130,5 @@ const validateAsync = function ($object, $rules, $returnValidator = false) {
     return validate($object, $rules, $returnValidator, true);
 };
 
+
 module.exports = {validate, validateAsync, Validator};
