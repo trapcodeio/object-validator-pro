@@ -148,8 +148,6 @@ skipMobile = () => {
 };
 
 // mobile will not be validated because :skip function returned true
-
-
 ```
 #### Default Rules
 These are default define rules with their errors messages.

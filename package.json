@@ -20,7 +20,7 @@
     "async-validator"
   ],
   "author": "TrapCode",
-  "license": "ISC",
+  "license": "MIT",
   "homepage": "https://bitbucket.org/trapcodeio/object-validator-pro#readme",
   "dependencies": {
     "lodash": "^4.17.11"
