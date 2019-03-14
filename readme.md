@@ -85,6 +85,46 @@ check = validate(data, rules);
 // log: [ 'username', 'Username is not typeOf string' ]
 ```
 
+
+#### Simple validateAsync Example
+```javascript
+const axios = require('axios');
+
+let asyncTestData = {
+    url: 'https://google.com',
+};
+    
+let asyncTestRules = {
+    url: {urlIsOnline: true}
+};
+
+// lets add urlIsOnline Async validator.
+new Validator('urlIsOnline', async (value, option) => {
+    try{
+        await axios.get(value);
+        return true;
+    }catch(e){
+        return false;
+    }
+}, 'Url is not online!');
+
+
+// if any of your rules contain an async validator,
+// You use the validateAsync function instead of validate, returns Promise<boolean>
+// You can use await or Promise.then((result){})
+
+let first = await validateAsync(asyncTestData, asyncTestRules);
+console.log(first);
+// logs: true
+
+asyncTestData.url = 'https://some-website-that-does-not-exists-2019.com';
+
+let second = await validateAsync(asyncTestData, asyncTestRules);
+console.log(second);
+// log: ["url", "Url is not online!"]
+// log: false
+```
+
 #### Super Rules
 `*`: (_wildcard_) validates all object keys against every validator defined in its value.
 
