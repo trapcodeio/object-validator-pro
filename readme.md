@@ -220,6 +220,18 @@ These are default define rules with their errors messages.
 
 `{selectMax: 10}`: _"Select at-most :option :param."_,
 
+| Rule          | Example           | OptionType    | Description                    |
+| ------------- | ---------         | ------------  | ------------------------------------- |
+| must        | `{must: true}`    | boolean: true | Checks if this exist or if undefined  |
+| typeOf      | `{typeOf: 'string'}` | string           | works exactly like javascript `typeof`|
+| min      | `{min: 5}` | number/string           | value >= 5 |
+| max      | `{max: 10}` | number/string           | value <= 10 |
+| minLength      | `{min: 5}` | string/array           | value.length >= 5 |
+| maxLength      | `{max: 10}` | string/array           | value.length <= 10 |
+| selectMin      | `{selectMin: 5}` | array          | value.length >= 5 |
+| selectMax      | `{selectMax: 10}` | array          | value.length >= 10 |
+
+
 #### Overriding default `onEachError` function
 Default `onEachError` function can be overwritten and can also be set per validation. which ever you choose depending on the project.
 
