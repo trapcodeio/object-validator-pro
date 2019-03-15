@@ -202,34 +202,18 @@ skipMobile = () => {
 // mobile will not be validated because :skip function returned true
 ```
 #### Default Rules
-These are default define rules with their errors messages.
 
-`{must: true}`: _":param is required."_
 
-`{typeOf: 'string'}`: _":param is not typeOf :option"_
-
-`{min: 5}`: _":param is too small. (Min. :option)"_
-
-`{max: 10}`: _":param is too big. (Max. :option)"_
-
-`{minLength: 5}`: _":param is too short. (Min. :option characters)"_
-
-`{maxLength: 10}`: _":param is too long. (Max. :option characters)"_,
-
-`{selectMin: 5}`: _"Select at-least :option :param."_,
-
-`{selectMax: 10}`: _"Select at-most :option :param."_,
-
-| Rule          | Example           | OptionType    | Description                    |
-| ------------- | ---------         | ------------  | ------------------------------------- |
-| must        | `{must: true}`    | boolean: true | Checks if this exist or if undefined  |
-| typeOf      | `{typeOf: 'string'}` | string           | works exactly like javascript `typeof`|
-| min      | `{min: 5}` | number/string           | value >= 5 |
-| max      | `{max: 10}` | number/string           | value <= 10 |
-| minLength      | `{min: 5}` | string/array           | value.length >= 5 |
-| maxLength      | `{max: 10}` | string/array           | value.length <= 10 |
-| selectMin      | `{selectMin: 5}` | array          | value.length >= 5 |
-| selectMax      | `{selectMax: 10}` | array          | value.length >= 10 |
+| Rule          | Example     | OptionType    | Description    | Errors |
+| ------------- | ---------   | ------------  | -------------- | -------------- |
+| must        | `{must: true}`    | boolean: true | Checks if this exist or if undefined  | _:param is required._
+| typeOf      | `{typeOf: 'string'}` | string           | works exactly like javascript `typeof`| _:param is not typeOf :option_
+| min      | `{min: 5}` | number/string           | value >= 5 | _:param is too small. (Min. :option)_
+| max      | `{max: 10}` | number/string           | value <= 10 | _:param is too big. (Max. :option)_
+| minLength      | `{min: 5}` | string/array           | value.length >= 5 | _:param is too short. (Min. :option characters)_
+| maxLength      | `{max: 10}` | string/array           | value.length <= 10 | _:param is too long. (Max. :option characters)_
+| selectMin      | `{selectMin: 5}` | array          | value.length >= 5 | _Select at-least :option :param._
+| selectMax      | `{selectMax: 10}` | array          | value.length >= 10 | _Select at-most :option :param._
 
 
 #### Overriding default `onEachError` function
