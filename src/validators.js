@@ -30,7 +30,18 @@ let validators = {
      * @param option
      * @return {boolean}
      */
+    exact(value, option) {
+        return value === option;
+    },
+
+    /**
+     * @private
+     * @param value
+     * @param option
+     * @return {boolean}
+     */
     min(value, option) {
+        if (typeof value === 'string') return validators.minLength(value, option);
         value = parseFloat(value);
         option = parseFloat(option);
         return value >= option;
@@ -43,6 +54,7 @@ let validators = {
      * @return {boolean}
      */
     max(value, option) {
+        if (typeof value === 'string') return validators.maxLength(value, option);
         value = parseFloat(value);
         option = parseFloat(option);
         return value <= option;
@@ -55,7 +67,7 @@ let validators = {
      * @return {boolean}
      */
     minLength(value, option) {
-        value = validators._trimIfString_(value);
+        value = validators.___trimIfString(value);
         return value.length >= option;
     },
 
@@ -66,7 +78,7 @@ let validators = {
      * @return {boolean}
      */
     maxLength(value, option) {
-        value = validators._trimIfString_(value);
+        value = validators.___trimIfString(value);
         return value.length <= option;
     },
 
@@ -83,10 +95,20 @@ let validators = {
     /**
      * @private
      * @param value
+     * @param option
+     * @return {*|boolean}
+     */
+    selectMax(value, option) {
+        return validators.maxLength(value, option)
+    },
+
+    /**
+     * @private
+     * @param value
      * @return {string}
      * @private
      */
-    _trimIfString_(value) {
+    ___trimIfString(value) {
         return typeof value === 'string' ? value.trim() : value
     }
 };

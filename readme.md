@@ -1,8 +1,14 @@
-## Object-Validator-Pro
+## Object-Validator-Pro (OVP)
 
 Object-Validator-Pro provides a very easy api for developers to make both **Sync** and **Async** custom validations.
 
-Also comes with 8 validators out of the box which can be overwritten easily.  
+Has with **8 validators** out of the box which can be overwritten easily.
+
+OVP - is best for your **custom validation rules** not already known validations rules you can find in other libraries.
+
+You can create your own validation library out of OVP and use them in as many projects as you want.
+
+**You set your rules just the way you understand them.**
 
 For: **NodeJs** and **Browser** frontend.
 ### Installation
@@ -23,6 +29,12 @@ yarn add object-validator-pro
 
 ```javascript
 const {validate, validateAsync, Validator} = require("object-validator-pro");
+```
+
+OR 
+
+```javascript
+import {valdate, validateAsync, Validtor} from "object-validator-pro";
 ```
 
 `vaidate`: Function to run validations, returns `boolean`
