@@ -170,6 +170,29 @@ class ObjectValidator {
 
         let functions = this.functions;
 
+
+        if (validateWith.hasOwnProperty(config.rulesWildcard)) {
+            const wildcardRules = validateWith[config.rulesWildcard];
+            delete validateWith[config.rulesWildcard];
+
+            let objectKeys = Object.keys(validateWith);
+            let newValidateWith = {};
+
+
+            for (let i = 0; i < objectKeys.length; i++) {
+                let objectKey = objectKeys[i];
+                if (objectKey !== '*') {
+                    newValidateWith[objectKey] = _extend({}, wildcardRules, validateWith[objectKey])
+                }
+            }
+
+            // Redeclare Super Validators
+            if (typeof validateWith['*'] !== undefined)
+                newValidateWith['*'] = validateWith['*'];
+
+            validateWith = newValidateWith;
+        }
+
         if (validateWith.hasOwnProperty(config.wildcard)) {
             let objectKeys = Object.keys($object);
 
@@ -188,22 +211,6 @@ class ObjectValidator {
             validateWith = _extend({}, validateWith, newValidateWith);
             delete validateWith[config.wildcard];
 
-        }
-
-        if (validateWith.hasOwnProperty(config.rulesWildcard)) {
-            const wildcardRules = validateWith[config.rulesWildcard];
-            delete validateWith[config.rulesWildcard];
-
-            let objectKeys = Object.keys(validateWith);
-            let newValidateWith = {};
-
-
-            for (let i = 0; i < objectKeys.length; i++) {
-                let objectKey = objectKeys[i];
-                newValidateWith[objectKey] = _extend({}, wildcardRules, validateWith[objectKey])
-            }
-
-            validateWith = newValidateWith;
         }
 
         return {functions, validateWith}

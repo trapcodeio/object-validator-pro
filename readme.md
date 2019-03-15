@@ -175,20 +175,20 @@ wildcardTestRules = {
 };
 
 // the above will be transformed to this using wildcards
-wildcardTestRules = {
-    address: {must: true, typeOf: 'string', minLength: 10},
-    name: {must: true, typeOf: 'string'},
-    mobile: {must: true, typeOf: 'string'}
+wildcardTestRules = { 
+    address: { typeOf: 'string', must: true, minLength: 10 },
+    name: { typeOf: 'string' },
+    mobile: { typeOf: 'string' } 
 };
 
 // name and mobile was automatically added because * wildcard exists.
-// If * removed and ** still exists, will result to:
+// If * is removed and ** still exists, will result to:
 
 wildcardTestRules = { 
     address: { must: true, minLength: 10 } 
 }
 ```
-value of `*` is added to object keys, while value of `**` is added to all **defined** rules.
+value of `*` is added to all **object keys**, while value of `**` is added to all **defined** rules.
 
 Notice that `wildcardTestRules.address` rules comes first when transformed before the other keys of the object.
 This is because **defined** rules runs before `*` wildcard added rules.
