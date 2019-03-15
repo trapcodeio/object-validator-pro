@@ -44,6 +44,22 @@ import {valdate, validateAsync, Validtor} from "object-validator-pro";
 `new Validator`: to create/add your custom validators.
 
 
+#### Default Rules
+
+
+| Rule          | Example     | OptionType    | Description    | Errors |
+| ------------- | ---------   | ------------  | -------------- | -------------- |
+| must        | `{must: true}`    | boolean: true | Checks if this exist or if undefined  | _:param is required._
+| typeOf      | `{typeOf: 'string'}` | string           | works exactly like javascript `typeof`| _:param is not typeOf :option_
+| min      | `{min: 5}` | number/string           | value >= 5 | _:param is too small. (Min. :option)_
+| max      | `{max: 10}` | number/string           | value <= 10 | _:param is too big. (Max. :option)_
+| minLength      | `{min: 5}` | string/array           | value.length >= 5 | _:param is too short. (Min. :option characters)_
+| maxLength      | `{max: 10}` | string/array           | value.length <= 10 | _:param is too long. (Max. :option characters)_
+| selectMin      | `{selectMin: 5}` | array          | value.length >= 5 | _Select at-least :option :param._
+| selectMax      | `{selectMax: 10}` | array          | value.length >= 10 | _Select at-most :option :param._
+
+
+
 #### Simple Form Data Validation
 ```javascript
     // Object to validate
@@ -201,20 +217,6 @@ skipMobile = () => {
 
 // mobile will not be validated because :skip function returned true
 ```
-#### Default Rules
-
-
-| Rule          | Example     | OptionType    | Description    | Errors |
-| ------------- | ---------   | ------------  | -------------- | -------------- |
-| must        | `{must: true}`    | boolean: true | Checks if this exist or if undefined  | _:param is required._
-| typeOf      | `{typeOf: 'string'}` | string           | works exactly like javascript `typeof`| _:param is not typeOf :option_
-| min      | `{min: 5}` | number/string           | value >= 5 | _:param is too small. (Min. :option)_
-| max      | `{max: 10}` | number/string           | value <= 10 | _:param is too big. (Max. :option)_
-| minLength      | `{min: 5}` | string/array           | value.length >= 5 | _:param is too short. (Min. :option characters)_
-| maxLength      | `{max: 10}` | string/array           | value.length <= 10 | _:param is too long. (Max. :option characters)_
-| selectMin      | `{selectMin: 5}` | array          | value.length >= 5 | _Select at-least :option :param._
-| selectMax      | `{selectMax: 10}` | array          | value.length >= 10 | _Select at-most :option :param._
-
 
 #### Overriding default `onEachError` function
 Default `onEachError` function can be overwritten and can also be set per validation. which ever you choose depending on the project.
