@@ -2,7 +2,7 @@
 
 Object-Validator-Pro provides a very easy api for developers to make both **Sync** and **Async** custom validations.
 
-Has with **8 validators** out of the box which can be overwritten easily.
+Has **8 validators** out of the box which can be overwritten easily.
 
 OVP - is best for your **custom validation rules** not already known validations rules you can find in other libraries.
 
