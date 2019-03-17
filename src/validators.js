@@ -21,7 +21,7 @@ let validators = {
      */
     typeOf(value, option) {
         option = option.toLowerCase();
-        if(option==='array')
+        if (option === 'array')
             return Array.isArray(value);
         return typeof value === option;
     },

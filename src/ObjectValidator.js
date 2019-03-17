@@ -1,5 +1,10 @@
+// require all needed lodash
 const _extend = require('lodash/extend');
 const _startCase = require('lodash/startCase');
+const _set = require('lodash/set');
+const _get = require('lodash/get');
+const _has = require('lodash/has');
+const _unset = require('lodash/unset');
 
 let validators = require('./validators');
 let errorMessages = require('./errors');
@@ -92,6 +97,62 @@ const ObjectValidatorEditor = {
         }
     }
 };
+
+/**
+ * ObjectOnValidation
+ * Handles object being validated.
+ */
+class ObjectOnValidation {
+    constructor(data) {
+        this.data = data;
+        return this;
+    }
+
+    /**
+     * Set path of object
+     * @method
+     * @param path
+     * @param value
+     * @return {object}
+     */
+    set(path, value) {
+        return _set(this.data, path, value);
+    }
+
+    /**
+     * Get path of object or return
+     * @method
+     * @param path
+     * @param $default
+     * @return {*}
+     */
+    get(path, $default) {
+        return _get(this.data, path, $default = undefined);
+    }
+
+    /**
+     * Has path in object
+     * @method
+     * @param path
+     * @return {boolean}
+     */
+    has(path) {
+        return _has(this.data, path);
+    }
+
+    /**
+     * Unset a path in object
+     * @method
+     * @param path
+     * @return {boolean}
+     */
+    unset(path) {
+        return _unset(this.data, path);
+    }
+}
+
+ObjectOnValidation.prototype.data = {};
+
 
 /**
  * ObjectValidator Class
@@ -238,7 +299,7 @@ class ObjectValidator {
         for (let i = 0; i < validateWithKeys.length; i++) {
             let param = validateWithKeys[i];
 
-            if ($object.hasOwnProperty(param)) {
+            if (_has($object, param)) {
                 let rules = validateWith[param];
                 let rulesKeys = Object.keys(rules);
 
@@ -289,11 +350,14 @@ class ObjectValidator {
     ___validationIsValid(rule, param, options) {
         let isValid = false;
         let $object = this.data;
+        let value = _get($object, param);
+
+        const oov = new ObjectOnValidation($object);
 
         if (validatorExtenders.hasOwnProperty(rule)) {
-            isValid = validatorExtenders[rule](validators[rule], $object[param], options);
+            isValid = validatorExtenders[rule](validators[rule], value, options, oov);
         } else {
-            isValid = validators[rule]($object[param], options);
+            isValid = validators[rule](value, options, oov);
         }
 
         return isValid;
@@ -341,7 +405,7 @@ class Validator {
      * @param {boolean} save
      * @return {Validator}
      */
-    constructor(name, validator = null, error = null, save = true) {
+    constructor(name, validator = null, error = '', save = true) {
         this.autoSave = save;
 
         if (typeof name === 'object') {
