@@ -27,6 +27,16 @@ yarn add object-validator-pro
 
 ### Usage
 
+Using **Browser** (If you must!), 
+[Bundle.run](https://bundle.run) provides a great **CDN** service that makes OVP work better and smoothly on any browser.
+```html
+<script src="https://bundle.run/object-validator-pro"></script>
+<script>
+    const {validate, validateAsync, Validator} = window['objectValidatorPro'];
+</script>
+```
+
+Using Package Managers
 ```javascript
 const {validate, validateAsync, Validator} = require("object-validator-pro");
 ```
@@ -34,7 +44,7 @@ const {validate, validateAsync, Validator} = require("object-validator-pro");
 OR 
 
 ```javascript
-import {valdate, validateAsync, Validtor} from "object-validator-pro";
+import {valdate, validateAsync, Validator} from "object-validator-pro";
 ```
 
 `vaidate`: Function to run validations, returns `boolean`
@@ -50,7 +60,7 @@ import {valdate, validateAsync, Validtor} from "object-validator-pro";
 | Rule          | Example     | OptionType    | Description    | Errors |
 | ------------- | ---------   | ------------  | -------------- | -------------- |
 | must        | `{must: true}`    | boolean: true | Checks if this exist or if undefined  | _:param is required._
-| typeOf      | `{typeOf: 'string'}` | string           | works exactly like javascript `typeof`| _:param is not typeOf :option_
+| typeOf      | `{typeOf: 'array'}` | string           | works exactly like javascript `typeof` but uses `Array.isArray` if option is "array"| _:param is not typeOf :option_
 | min      | `{min: 5}` | number/string           | value >= 5 | _:param is too small. (Min. :option)_
 | max      | `{max: 10}` | number/string           | value <= 10 | _:param is too big. (Max. :option)_
 | minLength      | `{min: 5}` | string/array           | value.length >= 5 | _:param is too short. (Min. :option characters)_
