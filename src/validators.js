@@ -9,7 +9,7 @@ let validators = {
             return false;
         } else if (typeof value === 'string' || Array.isArray(value)) {
             return value.length > 0
-        }s
+        }
         return true;
     },
 
