@@ -28,7 +28,10 @@ yarn add object-validator-pro
 ### Usage
 
 Using **Browser** (If you must!), 
-[Bundle.run](https://bundle.run) provides a great **CDN** service that makes OVP work better and smoothly on any browser.
+
+<a href="https://bundle.run" target="_blank">Bundle.run</a> 
+provides a great **CDN** service that makes OVP work better and smoothly on any browser.
+
 ```html
 <script src="https://bundle.run/object-validator-pro"></script>
 <script>
