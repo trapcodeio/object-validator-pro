@@ -222,8 +222,9 @@ rules = {
 
 // mobile will not be validated because :skip is true
 // :skip can also accept a function that returns a boolean
+// The value its validating will be passed to that function
 
-skipMobile = () => {
+skipMobile = (mobile) => {
     // do some check
     return true;
 };
@@ -327,7 +328,7 @@ check = validate(data, rules, validatorOptions);
 
 #### Adding New Validation
 
-using the `new Validator(name, validationFn, error?)` syntax you can add or modify any validator or error.
+using the `new Validator(name, validationFn, error)` syntax you can add or modify any validator or error.
 
 Lets add a new validation called `exact` that checks if the `data` key matches some other word.
 
