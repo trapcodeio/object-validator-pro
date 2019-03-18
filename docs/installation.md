@@ -40,12 +40,26 @@ After Installation you can **require** or **import** ovp into your script.
 const {validate, validateAsync, Validator} = require("object-validator-pro");
 ```
 
-**OR** 
+**OR**
 
 ```javascript
 import {validate, validateAsync, Validator} from "object-validator-pro";
 ```
 
+
+#### What is Returned?
+OVP returns object `{validate, validateAsync, Validator}`
+
+##### validate
+Function to run validations, returns `boolean`
+
+##### validateAsync
+Function to run Async validations using `await`, returns `Promise<boolean>`
+
+##### Validator
+`new Validator` to create/add your custom validators.
+
+`Validator` Also contains static helper objects.
 
 ___
 [How it works >](how_it_works.md)
