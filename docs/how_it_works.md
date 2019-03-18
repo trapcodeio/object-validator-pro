@@ -3,7 +3,7 @@
 -----
 
 ### How it Works
-Before you dive into the **core** of ovp lets tell you the basics.
+Before you dive into the **core**, lets tell you the basics.
 
 The `validate` function expects min: 2 and max: 3 arguments
 
@@ -32,7 +32,7 @@ let ourObject = {
 };
 ```
 
-Now we have an object lets set some rules.
+Lets set some rules.
 OVP loops through these rules and passes the value of the key in the object being validated.
 
 ```javascript
@@ -116,13 +116,13 @@ console.log(isValid);
 true
 ```
 
-Remember `validate` function can take 3 arguments.
-You can pass a `yes` callback function to run once all validation are successful
+Remember `validate` function accepts 3 arguments.
+You can pass a `yes` callback function to run once all validation are successful.
 
 ```javascript
 // Rerun validation
 let isValid = validate(ourObject, rule, (object) => {
-    console.log(object.name);
+    console.log(object.hobbies);
 });
 console.log(isValid);
 ```
@@ -132,10 +132,13 @@ console.log(isValid);
 true
 ```
 
-The `yes` callback function is called and validate function also returns `true`;
+The `yes` callback function is called and validate function also returns `true`.
+The object being validated is also sent to the callback function.
 
-We hope you understand the basics of how OVP works now.
-Lets dive into the amazing part of OVP.
+We hope you understand the basics of how it works now.
+You can play with `ourObject` to go against the rules to see how OVP reacts.
+
+Lets dive into the amazing part of using OVP.
 
 -----
-[How to Create/Modify Validators](validators.md)
+[Creating/Modifying Validators >](validators.md)

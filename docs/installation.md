@@ -9,7 +9,7 @@ OVP can be used **directly** in browsers or **imported** using node package mana
 Using **Direct** browser script tag (If you must!), 
 
 [Bundle.run](https://bundle.run) 
-provides a great **CDN** service that makes OVP work better and smoothly on any browser.
+provides a great **CDN** service that serves you a minified version of OVP.
 
 ```html
 <script src="https://bundle.run/object-validator-pro"></script>
