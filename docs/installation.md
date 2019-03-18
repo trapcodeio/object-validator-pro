@@ -1,9 +1,9 @@
 ## Object Validator Pro (OVP)
-
 [< Index](index.md)
+___
 
 ### Installation
-Ovp can be used directly in browsers or imported using node package managers in your project.
+OVP can be used directly in browsers or imported using node package managers.
 
 
 #### Browser
@@ -15,9 +15,9 @@ provides a great **CDN** service that makes OVP work better and smoothly on any 
 ```html
 <script src="https://bundle.run/object-validator-pro"></script>
 ```
-Bundle.run sets `window['objectValidatorPro']`;
 
 ```javascript
+// Bundle.run sets `window['objectValidatorPro']`;
 const {validate, validateAsync, Validator} = window['objectValidatorPro'];
 ```
 
@@ -43,8 +43,9 @@ const {validate, validateAsync, Validator} = require("object-validator-pro");
 **OR** 
 
 ```javascript
-import {valdate, validateAsync, Validator} from "object-validator-pro";
+import {validate, validateAsync, Validator} from "object-validator-pro";
 ```
 
 
+___
 [How it works >](how_it_works.md)
