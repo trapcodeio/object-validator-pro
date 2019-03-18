@@ -1,14 +1,14 @@
 {
   "name": "object-validator-pro",
   "version": "1.0.8",
-  "description": "Easy extendable object validator.",
+  "description": "Easy Extendable object validator.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://trapcodeio@bitbucket.org/trapcodeio/object-validator-pro.git"
+    "url": "git+https://github.com/trapcodeio/object-validator-pro.git"
   },
   "keywords": [
     "object-validator",
@@ -21,7 +21,7 @@
   ],
   "author": "TrapCode",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/trapcodeio/object-validator-pro#readme",
+  "homepage": "https://github.com/trapcodeio/object-validator-pro#readme",
   "dependencies": {
     "lodash": "^4.17.11"
   }
