@@ -1,5 +1,6 @@
-[< Index](index.md)
-___
+[< Index](index.md) 
+
+-----
 
 ### Installation
 OVP can be used **directly** in browsers or **imported** using node package managers.
@@ -60,5 +61,5 @@ Function to run Async validations using `await`, returns `Promise<boolean>`
 `Validator` Also contains static helper objects.
 
 
-___
+-----
 [How it works >](how_it_works.md)
