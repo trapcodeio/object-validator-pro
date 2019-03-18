@@ -1,5 +1,6 @@
 [< Installation](installation.md)
-___
+
+-----
 
 ### How it Works
 Before you dive into the **core** of ovp lets tell you the basics.
@@ -26,19 +27,18 @@ let ourObject = {
     hobbies: ['eat', 'code', 'sleep'],
     website: {
         name: 'My Website',
-        url: 'https://some-blog.com'
+        url: 'some-blog.com'
     }
 };
 ```
 
-Now we have an object lets create some rules.
-
+Now we have an object lets set some rules.
 OVP loops through these rules and passes the value of the key in the object being validated.
 
 ```javascript
 // Rules are structured like
 {
-    objectKey: objectOfRulesToValidateWith
+    objectKey: objectOfValidatorsToValidateWith
 }
 ```
 
@@ -71,7 +71,7 @@ The first log is an array logged by OVP's default `onEachError` function.
 
 **Surprised?** Yes! OVP supports error messages.
 
-The second log `false` is the value `isValid` because validation failed.
+The second log `false` is the value of `isValid` because validation failed.
 
 lets modify `ourObject`
 ```javascript
@@ -88,4 +88,54 @@ console.log(isValid);
 false
 ```
 
-From the error message above you can tell that the `typeOf: 'string'` rule stopped the validation because `typeof ourObject.email !== 'string'`
+From the error message above you can tell that the `typeOf: 'string'` rule stopped the validation because `typeof ourObject.email !== 'string'` :)
+```javascript
+// Assuming...
+ourObject.email = 'user@example.com';
+
+// Rerun validation
+let isValid = validate(ourObject, rule);
+console.log(isValid);
+```
+```
+// logs
+[ 'age', 'Age is too small. (Min. 13)' ]
+false
+```
+
+`ourObject.email` passed all its validators: `{typeOf: 'string', minLength: 5}`, then moves to `ourObject.age` after `ourObject.name` passed all its rules.
+
+```javascript
+// Assuming...
+ourObject.age = 30;
+
+// Rerun validation
+let isValid = validate(ourObject, rule);
+console.log(isValid);
+// logs
+true
+```
+
+Remember `validate` function can take 3 arguments.
+You can pass a `yes` callback function to run once all validation are successful
+
+```javascript
+// Rerun validation
+let isValid = validate(ourObject, rule, (object) => {
+    console.log(object.name);
+});
+console.log(isValid);
+```
+```
+// logs
+[ 'eat', 'code', 'sleep' ]
+true
+```
+
+The `yes` callback function is called and validate function also returns `true`;
+
+We hope you understand the basics of how OVP works now.
+Lets dive into the amazing part of OVP.
+
+-----
+[How to Create/Modify Validators](validators.md)
