@@ -1,13 +1,11 @@
-## Object Validator Pro (OVP)
 [< Index](index.md)
 ___
 
 ### Installation
-OVP can be used directly in browsers or imported using node package managers.
-
+OVP can be used **directly** in browsers or **imported** using node package managers.
 
 #### Browser
-Using **Browser** (If you must!), 
+Using **Direct** browser script tag (If you must!), 
 
 [Bundle.run](https://bundle.run) 
 provides a great **CDN** service that makes OVP work better and smoothly on any browser.
@@ -51,7 +49,7 @@ import {validate, validateAsync, Validator} from "object-validator-pro";
 OVP returns object `{validate, validateAsync, Validator}`
 
 ##### validate
-Function to run validations, returns `boolean`
+Function to run validations on an object with rules, returns `boolean`
 
 ##### validateAsync
 Function to run Async validations using `await`, returns `Promise<boolean>`
@@ -60,6 +58,7 @@ Function to run Async validations using `await`, returns `Promise<boolean>`
 `new Validator` to create/add your custom validators.
 
 `Validator` Also contains static helper objects.
+
 
 ___
 [How it works >](how_it_works.md)
