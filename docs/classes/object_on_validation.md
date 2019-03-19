@@ -28,3 +28,7 @@ new Validator('someValidator', (val, opt, obj)=>{
     // obj is an instance of ObjectOnValidation
 })
 ```
+
+-----
+
+[< Validators ](../validators.md) 
