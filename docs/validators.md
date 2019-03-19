@@ -9,19 +9,20 @@ Creating powerful validators is very easy with OVP.
 // having imported {validate, Validator}
 new Validator(name, validationFn, error);
 ```
-| Argument          | Description
-| --------          | -----------
-| `name`            | Name of the validator _e.g: `min` or `max   ` etc..._
-| `validationFn`     | Function to handle validation.
-| `error`           | Error Message.
+
+| Argument          | Description |
+| --------          | ----------- |
+| `name`            | Name of the validator _e.g: `min` or `max   ` etc..._ |
+| `validationFn`     | Function to handle validation. |
+| `error`           | Error Message.|
 
 Your `validationFn` receives 3 arguments on validation. e.g
 
-| Argument          | Description
-| --------          | -----------
-| `val`            | Value of the key in the object being validated.
-| `opt`     | Option passed in the rule.
-| `obj`           | An `ObjectOnValidation` class to modify the current object being validated
+| Argument          | Description |
+| --------          | ----------- |
+| `val`            | Value of the key in the object being validated.|
+| `opt`     | Option passed in the rule.|
+| `obj`           | An `ObjectOnValidation` class to modify the current object being validated|
 
 ```javascript
 // First we create a validator named: MyValidator
@@ -30,6 +31,7 @@ new Validator('myValidator', (...args) => {
     return false;
 }, ':param failed myValidator');
 ```
+
 The above syntax creates a validator named `myValidator` and logs all the arguments it receives.
 Now lets run some validation to see how this turns out.
 
