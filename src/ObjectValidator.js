@@ -103,20 +103,31 @@ const ObjectValidatorEditor = {
  * Handles object being validated.
  */
 class ObjectOnValidation {
-    constructor(data) {
-        this.data = data;
+    constructor(data, param) {
+        this.___data = data;
+        this.param = param;
         return this;
     }
 
     /**
-     * Set path of object
+     * Set value to path of object
      * @method
      * @param path
      * @param value
      * @return {object}
      */
     set(path, value) {
-        return _set(this.data, path, value);
+        return _set(this.___data, path, value);
+    }
+
+    /**
+     * Set value to this param path
+     * @methods
+     * @param value
+     * @return {*}
+     */
+    setThis(value) {
+        return this.set(this.param, value);
     }
 
     /**
@@ -127,7 +138,7 @@ class ObjectOnValidation {
      * @return {*}
      */
     get(path, $default) {
-        return _get(this.data, path, $default = undefined);
+        return _get(this.___data, path, $default = undefined);
     }
 
     /**
@@ -137,7 +148,7 @@ class ObjectOnValidation {
      * @return {boolean}
      */
     has(path) {
-        return _has(this.data, path);
+        return _has(this.___data, path);
     }
 
     /**
@@ -147,11 +158,12 @@ class ObjectOnValidation {
      * @return {boolean}
      */
     unset(path) {
-        return _unset(this.data, path);
+        return _unset(this.___data, path);
     }
 }
 
-ObjectOnValidation.prototype.data = {};
+ObjectOnValidation.prototype.___data = {};
+ObjectOnValidation.prototype.param = '';
 
 
 /**
@@ -352,7 +364,7 @@ class ObjectValidator {
         let $object = this.data;
         let value = _get($object, param);
 
-        const oov = new ObjectOnValidation($object);
+        const oov = new ObjectOnValidation($object, param);
 
         if (validatorExtenders.hasOwnProperty(rule)) {
             isValid = validatorExtenders[rule](validators[rule], value, options, oov);

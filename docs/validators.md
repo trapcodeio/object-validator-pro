@@ -12,11 +12,17 @@ new Validator(name, validationFn, error);
 
 | Argument          | Description |
 | --------          | ----------- |
-| `name`            | Name of the validator _e.g: `min` or `max   ` etc..._ |
+| `name`            | Name of the validator _e.g: `min` or `max` etc..._ |
 | `validationFn`     | Function to handle validation. |
 | `error`           | Error Message.|
 
-Your `validationFn` receives 3 arguments on validation. e.g
+The `error` message can parse two keywords if found.
+
+`:param`: The key of the object being validated.
+
+`:option`: The option passed to the validator in the rules object.
+
+Your `validationFn` must return `true` or `false` and receives 3 arguments on validation. e.g
 
 | Argument          | Description |
 | --------          | ----------- |
@@ -78,7 +84,7 @@ new Validator('NoDrinkInHobbies', (hobbies) => {
     }
 }, 'Drink found in :param');
 
-new Validator('hasHttp', (url)=>{
+new Validator('hasHttp', (url) => {
     if(url.substr(0, 7) !== 'http://'){
         return false;
     } else {
@@ -94,7 +100,7 @@ let rule = {
 };
 
 // Run Validation
-let isValid = validate(ourObject, rule);
+isValid = validate(ourObject, rule);
 console.log(isValid);
 
 // Assuming...
@@ -117,4 +123,30 @@ false
 In the first validation, `website.url` fails because `hasHttp` validator returned `false`.
 After changing the value of `ourObject.hobbies` the second validation fails because `NoDrinkInHobbies` returned false.
 
+Sometimes not all validations requires program halt, some validations are for fixing things.
+
+e.g  Instead of stopping the above process because `website.url` does not have "http://", why don't we add it ourselves?
+
+```javascript
+// lets add a different validator
+new Validator('addProtocol', (url, protocol, obj) => {
+    protocol = protocol + '://';
+    if (url.substr(0, protocol.length) !== protocol)
+        obj.setThis(protocol + url);
+    return true;
+});
+
+validate(ourObject, {
+    'website.url': { addProtocol: 'http' }
+});
+console.log(ourObject.website.url);
+// logs: http://some-blog.com
+
+// Rerun with ftp instead
+validate(ourObject, {
+    'website.url': { addProtocol: 'ftp' }
+});
+console.log(ourObject.website.url);
+// logs: ftp://some-blog.com
+```
  
