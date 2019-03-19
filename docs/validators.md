@@ -193,11 +193,11 @@ new Validator('urlIsOnline', async (value) => {
 }, 'Url is not online!');
 
 let asyncTestData: {
-  url: 'http://some-blog-in-3030.com'  
+  url: 'some-blog-in-3030.com'  
 };
 
 let asyncRule = {
-    'url': {addProtocol: 'http', 'urlIsOnline': true}
+    'url': {addProtocol: 'https', 'urlIsOnline': true}
 };
 
 validateAsync(asyncTestData, asyncRule).then((isValid) => {
@@ -209,7 +209,7 @@ let isValid = await validateAsync(asyncTestData, asyncRule);
 // isValid is false;
 ``` 
 
-`UrlIsOnline` returned false because at the time of this documentation [http://some-blog-in-3030.com](http://some-blog-in-3030.com) is not online.
+`UrlIsOnline` returned false because at the time of this documentation [https://some-blog-in-3030.com](https//some-blog-in-3030.com) is not online.
 
 You should change the url to "google.com" and `urlIsOnline` will return `true`.
 
@@ -222,8 +222,8 @@ See example below to see how it works.
 
 ```javascript
 // Using Validator.make method
-let emailValidator = Validator.make('isEmail', (value, option) => {
-    return (typeof value === "string" && value.length>5 && value.includes('@'));
+let emailValidator = Validator.make('isEmail', (email) => {
+    return (typeof email === "string" && email.length>5 && email.includes('@'));
 }, ':param does not look like an email');
 
 let arrayOfValidators = [
@@ -268,5 +268,5 @@ returns: =====>
 Validator.addBulk(arrayOfValidators);
 ```
 
-The data return by `emailValidator` in the console results is an object that is the same with the Object declared in `arrayOfValidators` 
-So you can populate `arrayOfValidators` anywhich way you find preferable.
+The data return by `emailValidator` in the console results is the same with the Objects manually declared in `arrayOfValidators` 
+So you can populate `arrayOfValidators` any which way you find preferable.
