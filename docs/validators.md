@@ -149,4 +149,5 @@ validate(ourObject, {
 console.log(ourObject.website.url);
 // logs: ftp://some-blog.com
 ```
- 
+
+Notice `obj.setThis`? it is a function in the [`ObjectOnValidation`](classes/object_on_validation.md)
