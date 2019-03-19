@@ -141,4 +141,4 @@ You can play with `ourObject` to go against the rules to see how OVP reacts.
 Lets dive into the amazing part of using OVP.
 
 -----
-[Creating/Modifying Validators >](validators.md)
+[Rule/Schema Helpers>](rule_helpers.md)

@@ -1,113 +1,75 @@
-## Object-Validator-Pro (OVP)
+## Object Validator Pro (OVP)
 
+#### What is OVP?
+Object-Validator-Pro provides a very simple API for developers to make both **Sync** and **Async** validations on any javascript object.
 
-Object-Validator-Pro provides a very easy api for developers to make both **Sync** and **Async** custom validations.
-
-Has **8 validators** out of the box which can be overwritten easily.
-
-OVP - is best for your **custom validation rules** not already known validations rules you can find in other libraries.
+To Use OVP efficiently, you need to understand how it validates each key in any given object against its rules.
+Unlike other validation libraries, OVP is best for your **custom validation rules**.
 
 You can create your own validation library out of OVP and use them in as many projects as you want.
 
 **You set your rules just the way you understand them.**
 
-For: **NodeJs** and **Browser** frontend.
-### Installation
 
-Using **npm**
+#### Get Started.
 
-```bash
-npm install object-validator-pro
-```
-
-Using **yarn**
-
-```bash
-yarn add object-validator-pro
-```
-
-### Usage
-
-Using **Browser** (If you must!), 
-
-<a href="https://bundle.run" target="_blank">Bundle.run</a> 
-provides a great **CDN** service that makes OVP work better and smoothly on any browser.
-
-```html
-<script src="https://bundle.run/object-validator-pro"></script>
-<script>
-    const {validate, validateAsync, Validator} = window['objectValidatorPro'];
-</script>
-```
-
-Using Package Managers
-```javascript
-const {validate, validateAsync, Validator} = require("object-validator-pro");
-```
-
-OR 
-
-```javascript
-import {valdate, validateAsync, Validator} from "object-validator-pro";
-```
-
-`vaidate`: Function to run validations, returns `boolean`
-
-`validateAsync`: Function to run Async validations using `await`, returns `Promise<boolean>`
-
-`new Validator`: to create/add your custom validators.
-
-
-#### Default Rules
-
-
-| Rule          | Example     | OptionType    | Description    | Errors |
-| ------------- | ---------   | ------------  | -------------- | -------------- |
-| must        | `{must: true}`    | boolean: true | Checks if this exist or if undefined  | _:param is required._
-| typeOf      | `{typeOf: 'array'}` | string           | works exactly like javascript `typeof` but uses `Array.isArray` if option is "array"| _:param is not typeOf :option_
-| min      | `{min: 5}` | number/string           | value >= 5 | _:param is too small. (Min. :option)_
-| max      | `{max: 10}` | number/string           | value <= 10 | _:param is too big. (Max. :option)_
-| minLength      | `{min: 5}` | string/array           | value.length >= 5 | _:param is too short. (Min. :option characters)_
-| maxLength      | `{max: 10}` | string/array           | value.length <= 10 | _:param is too long. (Max. :option characters)_
-| selectMin      | `{selectMin: 5}` | array          | value.length >= 5 | _Select at-least :option :param._
-| selectMax      | `{selectMax: 10}` | array          | value.length >= 10 | _Select at-most :option :param._
+* [Installation](docs/installation.md#installation)
+    + [Browser](docs/installation.md#browser)
+    + [Package Managers](docs/installation.md#package-manager)
+    + [What is Returned](docs/installation.md#what-is-returned)
+        * [validate](docs/installation.md#validate)
+        * [validateAsync](docs/installation.md#validateasync)
+        * [Validator](docs/installation.md#validator)
+* [How it Works](docs/how_it_works.md)
+* [Default Validators](docs/rules/index.md)
+* [Helpers](docs/rule_helpers.md)
+    + [Super Keys](docs/rule_helpers.md#super-keys)
+    + [Super Validators](docs/rule_helpers.md#super-validators)
+    + [Validation Event Handlers](docs/rule_helpers.md#validation-events)
+* [Validators](docs/validators.md)
+    + [Create new validator](docs/validators.md#how-to-create-a-validator)
+    + [Create async validator](docs/validators.md#async-validators)
+    + [Adding Bulk Validators](docs/validators.md#adding-bulk-validators)
+    + [Modify validators](docs/validators.md#modifying-validators)
+* Classes
+    + [ObjectOnValidation](docs/classes/object_on_validation.md)
 
 
 
 #### Simple Form Data Validation
 ```javascript
-    // Object to validate
-    let data = {
-        username: 'NodeJs',
-        password: '123456'
-    };
-    
-    // "*" sets validation for all data keys, more like a wildcard.
-    let rules = {
-        "*": {
-            typeOf: 'string',
-            must: true
-        },
-        password: {minLength: 10}
-    };
-    
-    
-    let check = validate(data, rules);
-    
-    if (!check) {
-        // do something
-    }
-    
+// Object to validate
+let data = {
+    username: 'NodeJs',
+    password: '123456'
+};
+
+// "*" sets validation for all data keys, more like a wildcard.
+let rules = {
+    "*": {
+        typeOf: 'string',
+        must: true
+    },
+    password: {minLength: 10}
+};
+
+
+let check = validate(data, rules);
+
+if (!check) {
+    // do something
+}
+
+// returns: false
+// log: [ 'password', 'Password is too short. (Min. 10 characters)' ]
+
+// if rules has an Async validator use
+
+validateAsync(data, rules).then((isValid) => {
+    // isValid holds the result: boolean;
     // returns: false
     // log: [ 'password', 'Password is too short. (Min. 10 characters)' ]
-    
-    // if rules has an Async validator use
-    
-    validateAsync(data, rules).then((isValid) => {
-        // isValid holds the result: boolean;
-        // returns: false
-        // log: [ 'password', 'Password is too short. (Min. 10 characters)' ]
-    });
+});
 ```
 
 `check` and `isValid` returned false,
@@ -167,11 +129,7 @@ console.log(second);
 // log: false
 ```
 
-#### Super Rules
-`*`: (_wildcard_) validates all object keys against every validator defined in its value.
-
-`**`: (_wildcard for validators_) validates all rules keys defined against every validator defined in its value.
-
+#### Super Rules Example
 ```javascript
 // assuming we have an object:
 wildcardData = {
@@ -207,276 +165,6 @@ value of `*` is added to all **object keys**, while value of `**` is added to al
 Notice that `wildcardTestRules.address` rules comes first when transformed before the other keys of the object.
 This is because **defined** rules runs before `*` wildcard added rules.
 
-#### Super Validators
-`:skip`: accepts a `boolean` or a `function(value?)` that returns a `boolean`, 
-if `false` that particular validation will be skipped!
-```javascript
-skipMobile= true;
-
-rules = {
-    mobile: {
-        ':skip': skipMobile,
-        'someMobileValidator': true,
-    },
-    username: {minLength: 10},
-};
-
-// mobile will not be validated because :skip is true
-// :skip can also accept a function that returns a boolean
-// The value its validating will be passed to that function
-
-skipMobile = (mobile) => {
-    // do some check
-    return true;
-};
-
-// mobile will not be validated because :skip function returned true
-```
-
-#### Overriding default `onEachError` function
-Default `onEachError` function can be overwritten and can also be set per validation. which ever you choose depending on the project.
-
-``Validator.overrideDefaultFunction(key, function)``
-
-`key`: Name of default function to override.
-
-`function`: Function to be replaced with. 
-
-```javascript
-Validator.overrideDefaultFunction('onEachError', (param, msg) => {
-    console.log('===> ', '{' + param + '}', msg)
-});
-
-check = validate(data, rules);
-
-// returns: false
-// log: ===> {username} Username is not typeOf string
-
-// Or set per validation
-
-check = validate(data, rules, {
-    onEachError(param, msg) {
-        console.log('Custom onEach Error ===> ', '{' + param + '}', msg)
-    }
-});
-// returns: false
-// Custom onEach Error ===>  {username} Username is not typeOf string
-
-
-// Without custom onEachError, it reverts back to default onEachError set above.
-
-data.username = 'NodeJs';
-check = validate(data, rules);
-
-// returns: false
-// log: {password} Password is too short. (Min. 10 characters)
-```
-
-Validator moves to password after username has been set to string and no longer has errors.
-
-Now lets set proper data to return true.
-```javascript
-data = {
-    username: 'NodeJs',
-    password: '1234567890'
-};
-
-check = validate(data, rules, function ($data) {
-    console.log($data);
-    console.log('Yes i passed all!!');
-});
-
-// returns: true;
-// log: { username: 'NodeJs', password: '1234567890' }
-// log: Yes i passed all!!
-```
-
-When all validation functions are passed without errors you can set a callback function
-as the third parameter of the `validate` function as seen above or an object containing a `yes` function as seen below.
-The form being validated is also passed to your callback function.
-
-```javascript
-check = validate(data, rules, {
-    yes ($data) {
-        console.log($data);
-        console.log('Yes i passed all!!');
-    }
-}); 
-```
-Works just like the direct function method and useful when setting other validation functions.
-
-`validate` 3rd parameter can accept an `object` of default functions just like this.
-```javascript
-let validatorOptions = {
-   yes() {},
-
-   beforeValidation() {
-       return true;
-   },
-
-   onEachError(param, msg) {}
-};
-
-check = validate(data, rules, validatorOptions);
-```
-
-`yes`: will run when all validation is successful. `check` will still return `boolean`.    
-
-`beforeValidation`: Runs before validation, Stops validation if returns false.
-
-`onEachError`: Callback on each error.
-
-
-#### Adding New Validation
-
-using the `new Validator(name, validationFn, error)` syntax you can add or modify any validator or error.
-
-Lets add a new validation called `exact` that checks if the `data` key matches some other word.
-
-`name`: Name of your new validator.
-
-`validator`: The function that runs your validation (can be `async` when using `validateAsync`)
-
-`error`: Error message to show.
-
-
-The `validator` is passed two arguments on validation
-
-
-`value`: The value of the object key being validated i.e `data[value]`.
-
-`option`: The value of the validation rule passed. 
-
-```javascript
-new Validator('exact', (value, option) => {
-    console.log([value, option]);
-    return false;
-}, ':param does not match :option');
-
-rules = {
-    username: {minLength: 20, exact: 'goodString'}
-};
-
-validate(data, rules);
-
-// returns: true
-// log: [ 'NodeJs', 'goodString' ]
-// log: [ 'username', 'Username does not match goodString' ]
-```
-
-`data.username` was checked with `exact` function added earlier.
-
-Notice the `:param` and `:option` in error message?
-
-`:param` if present is replaced with the `key` of the data you are validating.
-
-`:option` if present is replaced with the `value` of the validation rule passed. 
-
-This enables you create nice custom errors for your validations out of the box.
-
-You can also modify an error of a validator that already exists.
-
-```javascript
-new Validator('exact').error('Something Happened with: :param').save();
-
-validate(data, rules);
-
-// returns: false
-// log: [ 'NodeJs', 'goodString' ]
-// log: [ 'username', 'Something Happened with: Username' ]
-```
-
-#### Adding Bulk Validation
-You can set more than one custom validators using the `Validator.addBulk(arrayOfValidators)`
-
-`Validator.make`: returns object data of a validator, works just like the `new Validator` function but returns the validators data instead of setting them. 
-
-See example below to see how it works.
-
-```javascript
-// Using Validator.make method
-let emailValidator = Validator.make('isEmail', (value, option) => {
-    return (typeof value === "string" && value.length>5 && value.includes('@'));
-}, ':param does not look like an email');
-
-let arrayOfValidators = [
-    // Using Object Method
-    {
-        name: 'exact',
-        error: ':param is not what we are expecting!',
-        validator: (value, option) => {
-            return value === option;
-        }
-    },
-
-    // Using Object Method
-    {
-        name: 'strongPassword',
-        error: ':param is not strong. no Capital letter found!',
-        validator: (value) => {
-            return value.toLowerCase() !== value;
-        }
-    },
-
-    // Using Validator.make method Object from above
-    emailValidator,
-];
-
-console.log(arrayOfValidators);
-
-/*
-returns: =====>
-[ { name: 'exact',
-    error: ':param is not what we are expecting!',
-    validator: [Function: validator] },
-  { name: 'strongPassword',
-    error: ':param is not strong. no Capital letter found!',
-    validator: [Function: validator] },
-  { name: 'isEmail',
-    error: ':param does not look like an email',
-    validator: [Function] } ]
-*/
-```
-
-The data return by `emailValidator` in the console results is an object that is the same with the Object declared in `arrayOfValidators` 
-So you can populate `arrayOfValidators` anywhich way you find preferable.
-
-```javascript
-// Add to validators.
-Validator.addBulk(arrayOfValidators);
-
-data = {
-    email: 'john@mywebsite.com',
-    password: "123456",
-};
-
-rules = {
-    "*": {typeOf: "string"},
-    email: {
-        isEmail: true,
-        exact: 'admin@mywebsite.com'
-    },
-    password: {strongPassword: true}
-};
-
-
-validate(data, rules);
-// returns: false
-//log: [ 'email', 'Email is not what we are expecting!' ]
-// because: our rule "exact" expects email to be exactly "admin@mywebsite.com"
-
-data.email = "admin@mywebsite.com";
-
-validate(data, rules);
-// returns: false
-//log [ 'password', 'Password is not strong. no Capital letter found!' ]
-// because: our rule "strongPassword" requires password to have a capital letter
-
-
-data.password = "HELLO123456";
-validate(data, rules);
-// returns: true
-``` 
 
  
 #### Contributing

@@ -2,7 +2,7 @@
 
 -----
 
-###`ObjectOnValidation` Class
+### ObjectOnValidation Class
 This class holds the current object being validated and provides methods to modify it.
 It also holds the path to the key that is currently being validated in `this.param`.
 

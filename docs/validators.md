@@ -214,7 +214,7 @@ let isValid = await validateAsync(asyncTestData, asyncRule);
 You should change the url to "google.com" and `urlIsOnline` will return `true`.
 
 #### Adding Bulk Validators
-You can set more than one custom validators using the `Validator.addBulk(arrayOfValidators)`
+You can set more than one custom validator using the `Validator.addBulk(arrayOfValidators)`
 
 `Validator.make`: returns the object data of a validator, works just like the `new Validator` function but returns the validators data instead of setting them. 
 
@@ -270,3 +270,36 @@ Validator.addBulk(arrayOfValidators);
 
 The data return by `emailValidator` in the console results is the same with the Objects manually declared in `arrayOfValidators` 
 So you can populate `arrayOfValidators` any which way you find preferable.
+
+
+#### Modifying Validators
+Lets say for some reason you want to overwrite a validator that has been defined somewhere or somehow.
+
+You can simply create a new validator with new function and error but same name. like below.
+```javascript
+// Old validator.
+new Validator('checkName', () => {
+    return true;
+}, '1st Error message.');
+
+// Overwrite using this.
+new Validator('checkName', () => {
+    return false;
+}, 'Overwritten Error message.');
+```
+
+The above will work perfectly but OVP also includes an easy method to modify validators.
+
+using `new Validator(name)` with only name as argument enables modification or creation using `.save()`  
+
+```javascript
+// Modify only validationFn
+new Validator('checkName').validator(() => {
+    return true;
+}).save();
+
+// Modify only error
+new Validator('checkName').error('New Error Message.').save();
+```
+
+You can use any style you feel comfortable with.
