@@ -1,7 +1,8 @@
 let {
+    _,
     ObjectValidator,
     validators,
-    Validator
+    Validator,
 } = require('./src/ObjectValidator');
 
 
@@ -36,7 +37,7 @@ class AsyncObjectValidator extends ObjectValidator {
         for (let i = 0; i < validateWithKeys.length; i++) {
             let param = validateWithKeys[i];
 
-            if ($object.hasOwnProperty(param)) {
+            if (_.has($object, param)) {
                 let rules = validateWith[param];
                 let rulesKeys = Object.keys(rules);
 

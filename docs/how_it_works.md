@@ -27,7 +27,7 @@ let ourObject = {
     hobbies: ['eat', 'code', 'sleep'],
     website: {
         name: 'My Website',
-        url: 'some-blog.com'
+        url: 'some-blog-in-3030.com'
     }
 };
 ```

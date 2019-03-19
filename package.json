@@ -24,5 +24,8 @@
   "homepage": "https://github.com/trapcodeio/object-validator-pro#readme",
   "dependencies": {
     "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "axios": "^0.18.0"
   }
 }

@@ -47,7 +47,7 @@ let ourObject = {
     hobbies: ['eat', 'code', 'sleep'],
     website: {
         name: 'My Website',
-        url: 'some-blog.com'
+        url: 'some-blog-in-3030.com'
     }
 };
 
@@ -73,7 +73,7 @@ The log above explains that `val` argument in `validationFn` is the value of the
 
 `opt` is the value passed to `myValidator` rule i.e 'any', while `obj` is a helper class to modify the object we are validating.
 
-##### More Examples
+
 Lets a create validator that checks if `ourObject.hobbies` has an item "drink" and another validator that checks if `ourObject.website.url` has "http://"
 ```javascript
 new Validator('NoDrinkInHobbies', (hobbies) => {
@@ -137,17 +137,136 @@ new Validator('addProtocol', (url, protocol, obj) => {
 });
 
 validate(ourObject, {
-    'website.url': { addProtocol: 'http' }
-});
-console.log(ourObject.website.url);
-// logs: http://some-blog.com
-
-// Rerun with ftp instead
-validate(ourObject, {
     'website.url': { addProtocol: 'ftp' }
 });
 console.log(ourObject.website.url);
-// logs: ftp://some-blog.com
+// logs: ftp://some-blog-in-3030.com
+
+// Rerun with http instead
+validate(ourObject, {
+    'website.url': { addProtocol: 'http' }
+});
+console.log(ourObject.website.url);
+// logs: http://some-blog-in-3030.com
 ```
 
-Notice `obj.setThis`? it is a function in the [`ObjectOnValidation`](classes/object_on_validation.md)
+Notice our new validator does not have an error? this is because we know this has no errors.
+ 
+`obj.setThis`? this is a function in the [`ObjectOnValidation`](classes/object_on_validation.md) Class. `.setThis` sets the value of the current key we are validating.
+i.e
+
+```javascript
+// this line
+obj.setThis(protocol + url);
+
+// is equivalent to
+ourObject.website.url = protocol+url;
+
+// can also be set like this
+obj.set('website.url', protocol+url);
+
+// any key of the obj can be modified or created using
+obj.set(path, value);
+```
+
+Do see the [`ObjectOnValidation`](classes/object_on_validation.md) Class. It provides great helpers that assists with current object on validation modification.
+
+#### Async Validators
+Ovp handles async validators using the `validateAsync` function.
+
+`validatorFn` must also have `async` before it to be treated as async.
+All async validators are waited for and a `Promise<boolean>` is returned to you.
+
+Lets check if `website.url` is a valid url using [`axios`](https://www.npmjs.com/package/axios).
+
+```javascript
+const axios = require('axios');
+
+// lets add urlIsOnline Async validator.
+new Validator('urlIsOnline', async (value) => {
+    try{
+        await axios.get(value);
+        return true;
+    }catch(e){
+        return false;
+    }
+}, 'Url is not online!');
+
+let asyncTestData: {
+  url: 'http://some-blog-in-3030.com'  
+};
+
+let asyncRule = {
+    'url': {addProtocol: 'http', 'urlIsOnline': true}
+};
+
+validateAsync(asyncTestData, asyncRule).then((isValid) => {
+    // isValid is false;
+});
+
+// if you are in an async function you can use await instead
+let isValid = await validateAsync(asyncTestData, asyncRule);
+// isValid is false;
+``` 
+
+`UrlIsOnline` returned false because at the time of this documentation [http://some-blog-in-3030.com](http://some-blog-in-3030.com) is not online.
+
+You should change the url to "google.com" and `urlIsOnline` will return `true`.
+
+#### Adding Bulk Validators
+You can set more than one custom validators using the `Validator.addBulk(arrayOfValidators)`
+
+`Validator.make`: returns the object data of a validator, works just like the `new Validator` function but returns the validators data instead of setting them. 
+
+See example below to see how it works.
+
+```javascript
+// Using Validator.make method
+let emailValidator = Validator.make('isEmail', (value, option) => {
+    return (typeof value === "string" && value.length>5 && value.includes('@'));
+}, ':param does not look like an email');
+
+let arrayOfValidators = [
+    // Using Object Method
+    {
+        name: 'exact',
+        error: ':param is not what we are expecting!',
+        validator: (value, option) => {
+            return value === option;
+        }
+    },
+
+    // Using Object Method
+    {
+        name: 'strongPassword',
+        error: ':param is not strong. no Capital letter found!',
+        validator: (value) => {
+            return value.toLowerCase() !== value;
+        }
+    },
+
+    // Using Validator.make method Object from above
+    emailValidator,
+];
+
+console.log(arrayOfValidators);
+
+/*
+returns: =====>
+[ { name: 'exact',
+    error: ':param is not what we are expecting!',
+    validator: [Function: validator] },
+  { name: 'strongPassword',
+    error: ':param is not strong. no Capital letter found!',
+    validator: [Function: validator] },
+  { name: 'isEmail',
+    error: ':param does not look like an email',
+    validator: [Function] } ]
+*/
+
+
+Validator.addBulk(arrayOfValidators);
+```
+
+The data return by `emailValidator` in the console results is an object that is the same with the Object declared in `arrayOfValidators` 
+So you can populate `arrayOfValidators` anywhich way you find preferable.

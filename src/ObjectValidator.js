@@ -1,10 +1,11 @@
 // require all needed lodash
-const _extend = require('lodash/extend');
-const _startCase = require('lodash/startCase');
-const _set = require('lodash/set');
-const _get = require('lodash/get');
-const _has = require('lodash/has');
-const _unset = require('lodash/unset');
+let _ = {};
+_.extend = require('lodash/extend');
+_.startCase = require('lodash/startCase');
+_.set = require('lodash/set');
+_.get = require('lodash/get');
+_.has = require('lodash/has');
+_.unset = require('lodash/unset');
 
 let validators = require('./validators');
 let errorMessages = require('./errors');
@@ -102,6 +103,7 @@ const ObjectValidatorEditor = {
  * ObjectOnValidation
  * Handles object being validated.
  */
+
 class ObjectOnValidation {
     constructor(data, param) {
         this.___data = data;
@@ -117,7 +119,7 @@ class ObjectOnValidation {
      * @return {object}
      */
     set(path, value) {
-        return _set(this.___data, path, value);
+        return _.set(this.___data, path, value);
     }
 
     /**
@@ -138,7 +140,7 @@ class ObjectOnValidation {
      * @return {*}
      */
     get(path, $default) {
-        return _get(this.___data, path, $default = undefined);
+        return _.get(this.___data, path, $default = undefined);
     }
 
     /**
@@ -148,7 +150,7 @@ class ObjectOnValidation {
      * @return {boolean}
      */
     has(path) {
-        return _has(this.___data, path);
+        return _.has(this.___data, path);
     }
 
     /**
@@ -158,7 +160,7 @@ class ObjectOnValidation {
      * @return {boolean}
      */
     unset(path) {
-        return _unset(this.___data, path);
+        return _.unset(this.___data, path);
     }
 }
 
@@ -213,7 +215,7 @@ class ObjectValidator {
         if (typeof functions === 'function')
             functions = {yes: functions};
 
-        this.functions = _extend({}, ObjectValidatorFunctions, functions);
+        this.functions = _.extend({}, ObjectValidatorFunctions, functions);
         return this;
     }
 
@@ -255,7 +257,7 @@ class ObjectValidator {
             for (let i = 0; i < objectKeys.length; i++) {
                 let objectKey = objectKeys[i];
                 if (objectKey !== '*') {
-                    newValidateWith[objectKey] = _extend({}, wildcardRules, validateWith[objectKey])
+                    newValidateWith[objectKey] = _.extend({}, wildcardRules, validateWith[objectKey])
                 }
             }
 
@@ -276,12 +278,12 @@ class ObjectValidator {
                 if (typeof validateWith[objectKey] === 'undefined') {
                     newValidateWith[objectKey] = validateWith[config.wildcard];
                 } else {
-                    newValidateWith[objectKey] = _extend({}, validateWith[config.wildcard], validateWith[objectKey])
+                    newValidateWith[objectKey] = _.extend({}, validateWith[config.wildcard], validateWith[objectKey])
                 }
 
             }
 
-            validateWith = _extend({}, validateWith, newValidateWith);
+            validateWith = _.extend({}, validateWith, newValidateWith);
             delete validateWith[config.wildcard];
 
         }
@@ -311,7 +313,7 @@ class ObjectValidator {
         for (let i = 0; i < validateWithKeys.length; i++) {
             let param = validateWithKeys[i];
 
-            if (_has($object, param)) {
+            if (_.has($object, param)) {
                 let rules = validateWith[param];
                 let rulesKeys = Object.keys(rules);
 
@@ -362,7 +364,7 @@ class ObjectValidator {
     ___validationIsValid(rule, param, options) {
         let isValid = false;
         let $object = this.data;
-        let value = _get($object, param);
+        let value = _.get($object, param);
 
         const oov = new ObjectOnValidation($object, param);
 
@@ -386,7 +388,7 @@ class ObjectValidator {
      */
     ___runOnEachError(functions, rules, rule, param, options) {
         if (functions.hasOwnProperty('onEachError')) {
-            let name = _startCase(param);
+            let name = _.startCase(param);
 
             if (rules.hasOwnProperty('name')) {
                 name = rules.name;
@@ -538,4 +540,4 @@ Validator.prototype.$data = {
 };
 Validator.prototype.autoSave = true;
 
-module.exports = {ObjectValidator, validators, validatorExtenders, Validator};
+module.exports = {_, ObjectValidator, validators, Validator};
