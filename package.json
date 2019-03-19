@@ -25,7 +25,5 @@
   "dependencies": {
     "lodash": "^4.17.11"
   },
-  "devDependencies": {
-    "axios": "^0.18.0"
-  }
+  "devDependencies": {}
 }

@@ -112,6 +112,27 @@ class ObjectOnValidation {
     }
 
     /**
+     * Get path of object or return
+     * @method
+     * @param path
+     * @param $default
+     * @return {*}
+     */
+    get(path, $default = undefined) {
+        return _.get(this.___data, path, $default);
+    }
+
+    /**
+     * Has path in object
+     * @method
+     * @param path
+     * @return {boolean}
+     */
+    has(path) {
+        return _.has(this.___data, path);
+    }
+
+    /**
      * Set value to path of object
      * @method
      * @param path
@@ -130,27 +151,6 @@ class ObjectOnValidation {
      */
     setThis(value) {
         return this.set(this.param, value);
-    }
-
-    /**
-     * Get path of object or return
-     * @method
-     * @param path
-     * @param $default
-     * @return {*}
-     */
-    get(path, $default) {
-        return _.get(this.___data, path, $default = undefined);
-    }
-
-    /**
-     * Has path in object
-     * @method
-     * @param path
-     * @return {boolean}
-     */
-    has(path) {
-        return _.has(this.___data, path);
     }
 
     /**
