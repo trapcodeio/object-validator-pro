@@ -1,7 +1,7 @@
 {
   "name": "object-validator-pro",
   "version": "1.0.10",
-  "description": "Easy Extendable object validator.",
+  "description": "Easy Sync & Async object validator.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

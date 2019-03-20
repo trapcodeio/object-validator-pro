@@ -12,29 +12,7 @@ You can create your own validation library out of OVP and use them in as many pr
 
 
 #### Get Started.
-
-* [Installation](docs/installation.md#installation)
-    + [Browser](docs/installation.md#browser)
-    + [Package Managers](docs/installation.md#package-manager)
-    + [What is Returned](docs/installation.md#what-is-returned)
-        * [validate](docs/installation.md#validate)
-        * [validateAsync](docs/installation.md#validateasync)
-        * [Validator](docs/installation.md#validator)
-* [How it Works](docs/how_it_works.md)
-* [Default Validators](docs/rules/index.md)
-* [Helpers](docs/rule_helpers.md)
-    + [Super Keys](docs/rule_helpers.md#super-keys)
-    + [Super Validators](docs/rule_helpers.md#super-validators)
-    + [Validation Event Handlers](docs/rule_helpers.md#validation-events)
-* [Validators](docs/validators.md)
-    + [Create new validator](docs/validators.md#how-to-create-a-validator)
-    + [Create async validator](docs/validators.md#async-validators)
-    + [Adding Bulk Validators](docs/validators.md#adding-bulk-validators)
-    + [Modify validators](docs/validators.md#modifying-validators)
-* Classes
-    + [ObjectOnValidation](docs/classes/object_on_validation.md)
-
-
+See [Full Documentation](https://trapcodeio.github.io/object-validator-pro/) for more details.
 
 #### Simple Form Data Validation
 ```javascript
