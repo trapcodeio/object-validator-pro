@@ -138,6 +138,7 @@ wildcardTestRules = {
     address: { must: true, minLength: 10 } 
 }
 ```
+
 value of `*` is added to all **object keys**, while value of `**` is added to all **defined** rules.
 
 Notice that `wildcardTestRules.address` rules comes first when transformed before the other keys of the object.
