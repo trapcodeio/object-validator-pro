@@ -1,6 +1,6 @@
 {
   "name": "object-validator-pro",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Easy Sync & Async object validator.",
   "main": "index.js",
   "scripts": {
