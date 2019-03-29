@@ -9,7 +9,7 @@ It also holds the path to the key that is currently being validated in `this.par
 #### Properties
 | Name      | Description   |
 | --------- | ------------- |
-| `param`   | path of the object key that is currently being validated |
+| `path`   | path of the object key that is currently being validated |
 
 
 #### Methods
@@ -18,8 +18,9 @@ It also holds the path to the key that is currently being validated in `this.par
 | `get`   | `(path, $default=undefined)` | get `path` of the object being validated, if not exists returns `$default` |
 | `has`   | `(path)` | check if the object being validated has `path`, returns `boolean` |
 | `set`   | `(path, value)` | set `value` of `path` in the object being validated.  |
-| `setThis`   | `(value)` | sets `value` using `this.param` as `path` in the object being validated.  |
+| `setThis`   | `(value)` | sets `value` using `this.path` as `path` in the object being validated.  |
 | `unset`   | `(path)` | unset `path` in the object being validated.  |
+| `unsetThis`   |  -  | unset `path` in the object being validated using `this.path`.  |
 
 
 ##### Usage
