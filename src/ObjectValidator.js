@@ -103,11 +103,10 @@ const ObjectValidatorEditor = {
  * ObjectOnValidation
  * Handles object being validated.
  */
-
 class ObjectOnValidation {
     constructor(data, param) {
         this.___data = data;
-        this.param = param;
+        this.path = param;
         return this;
     }
 
@@ -150,7 +149,7 @@ class ObjectOnValidation {
      * @return {*}
      */
     setThis(value) {
-        return this.set(this.param, value);
+        return this.set(this.path, value);
     }
 
     /**
@@ -162,10 +161,20 @@ class ObjectOnValidation {
     unset(path) {
         return _.unset(this.___data, path);
     }
+
+
+    /**
+     * Unset this path in object
+     * @method
+     * @return {boolean}
+     */
+    unsetThis() {
+        return _.unset(this.___data, this.path);
+    }
 }
 
 ObjectOnValidation.prototype.___data = {};
-ObjectOnValidation.prototype.param = '';
+ObjectOnValidation.prototype.path = '';
 
 
 /**
