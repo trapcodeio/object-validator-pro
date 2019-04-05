@@ -10,7 +10,6 @@ You can create your own validation library out of OVP and use them in as many pr
 
 **You set your rules just the way you understand them.**
 
-
 #### Get Started.
 See [Full Documentation](https://trapcodeio.github.io/object-validator-pro/) for more details.
 
