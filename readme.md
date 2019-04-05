@@ -14,6 +14,17 @@ You can create your own validation library out of OVP and use them in as many pr
 #### Get Started.
 See [Full Documentation](https://trapcodeio.github.io/object-validator-pro/) for more details.
 
+#### After Installation
+```javascript
+const ObjectValidator = require('object-validator-pro');
+const ovp = new ObjectValidator();
+
+// log errors when they occur.
+ovp.setEventHandler('onEachError', (path, message) => {
+    console.log([path, message])
+})
+```
+
 #### Simple Form Data Validation
 ```javascript
 // Object to validate
@@ -32,7 +43,7 @@ let rules = {
 };
 
 
-let check = validate(data, rules);
+let check = ovp.validate(data, rules);
 
 if (!check) {
     // do something
@@ -43,7 +54,7 @@ if (!check) {
 
 // if rules has an Async validator use
 
-validateAsync(data, rules).then((isValid) => {
+ovp.validateAsync(data, rules).then((isValid) => {
     // isValid holds the result: boolean;
     // returns: false
     // log: [ 'password', 'Password is too short. (Min. 10 characters)' ]
@@ -61,7 +72,7 @@ To check if `*` (wildcard) rules affected `data.username`, it should return an e
 ```javascript
 data.username = ['an array instead of a string'];
 
-check = validate(data, rules);
+check = ovp.validate(data, rules);
 
 // returns: false
 // log: [ 'username', 'Username is not typeOf string' ]
@@ -81,9 +92,9 @@ let asyncTestRules = {
 };
 
 // lets add urlIsOnline Async validator.
-new Validator('urlIsOnline', async (value, option) => {
+ovp.addValidator('urlIsOnline', async (url) => {
     try{
-        await axios.get(value);
+        await axios.get(url);
         return true;
     }catch(e){
         return false;
@@ -95,13 +106,13 @@ new Validator('urlIsOnline', async (value, option) => {
 // You use the validateAsync function instead of validate, returns Promise<boolean>
 // You can use await or Promise.then((result){})
 
-let first = await validateAsync(asyncTestData, asyncTestRules);
+let first = await ovp.validateAsync(asyncTestData, asyncTestRules);
 console.log(first);
 // logs: true
 
 asyncTestData.url = 'https://some-website-that-does-not-exists-2019.com';
 
-let second = await validateAsync(asyncTestData, asyncTestRules);
+let second = await ovp.validateAsync(asyncTestData, asyncTestRules);
 console.log(second);
 // log: ["url", "Url is not online!"]
 // log: false

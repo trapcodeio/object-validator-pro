@@ -38,3 +38,10 @@ ms@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
   integrity sha512-tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg==
+
+object-validator-pro@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/object-validator-pro/-/object-validator-pro-1.0.13.tgz#c98af88b69f7a22ae9bf8aee4f158a3e8b6ca1f4"
+  integrity sha512-iGLxepP1OjFneaD8Jv0P75a76ySWZXpU8TL1kdZCi4qbuk2qg/PZwF8B/C/+gzzSaWpMseAa6FaVcYcdjBgq2Q==
+  dependencies:
+    lodash "^4.17.11"

@@ -1,10 +1,8 @@
+const Validator = require('./src/Validator');
 let {
     _,
-    ObjectValidator,
-    validators,
-    Validator,
+    ObjectValidator
 } = require('./src/ObjectValidator');
-
 
 /**
  * Extends ObjectValidator to create an async validation.
@@ -25,6 +23,7 @@ class AsyncObjectValidator extends ObjectValidator {
         let $object = this.data;
 
         // Run before validation function
+        // if(functions.hasOwnProperty('beforeValidation'))
         const $beforeValidation = functions.beforeValidation();
         if ($beforeValidation === false) {
             return false;
@@ -54,14 +53,14 @@ class AsyncObjectValidator extends ObjectValidator {
                 }
 
 
-                if(!skipThis){
+                if (!skipThis) {
 
                     for (let ii = 0; ii < rulesKeys.length; ii++) {
                         let rule = rulesKeys[ii];
                         let options = rules[rule];
                         let isValid;
 
-                        if (validators.hasOwnProperty(rule)) {
+                        if (this.validators.hasOwnProperty(rule)) {
                             isValid = this.___validationIsValid(rule, param, options);
 
 
@@ -98,44 +97,85 @@ class AsyncObjectValidator extends ObjectValidator {
     }
 }
 
-/**
- * ShortHand Validator Function
- * @name validate
- * @function
- * @param {object} $object - Object to be validator
- * @param {object} $rules - Rules for validation
- * @param {boolean|Object|Function} $returnValidator - Should return validator.
- * @param {boolean} $runAsyncValidation - Use AsyncObjectValidator instead
- * @return {boolean|ObjectValidator}
- */
-const validate = function ($object, $rules, $returnValidator = false, $runAsyncValidation = false) {
-    let ValidatorClass = ObjectValidator;
-    if ($runAsyncValidation === true) {
-        ValidatorClass = AsyncObjectValidator;
+class OVP {
+    constructor() {
+        this.validatorEngine = Validator(this)
     }
 
-    let validator = new ValidatorClass($object).rules($rules);
-
-    if (typeof $returnValidator === 'boolean' && !$returnValidator) {
-        return validator.validate();
-    } else if (typeof $returnValidator === 'object' || typeof $returnValidator === 'function') {
-        return validator.then($returnValidator).validate()
+    addValidator(...args) {
+        return new this.validatorEngine(...args);
     }
 
-    return validator;
+    makeValidator(...args){
+        return this.validatorEngine.make(...args);
+    }
+
+    /**
+     * ShortHand Validator Function
+     * @name validate
+     * @function
+     * @param {object} $object - Object to be validator
+     * @param {object} $rules - Rules for validation
+     * @param {boolean|Object|Function} $returnValidator - Should return validator.
+     * @param {boolean} $runAsyncValidation - Use AsyncObjectValidator instead
+     * @return {boolean|ObjectValidator}
+     */
+    validate($object, $rules, $returnValidator = false, $runAsyncValidation = false) {
+        let ValidatorClass = ObjectValidator;
+        if ($runAsyncValidation === true) {
+            ValidatorClass = AsyncObjectValidator;
+        }
+
+        let validator = new ValidatorClass($object, {
+            handlers: this.eventHandlers,
+            errors: this.validatorErrors,
+            validators: this.validators,
+        }).rules($rules);
+
+        if (typeof $returnValidator === 'boolean' && !$returnValidator) {
+            return validator.validate();
+        } else if (typeof $returnValidator === 'object' || typeof $returnValidator === 'function') {
+            return validator.then($returnValidator).validate()
+        }
+
+        return validator;
+    }
+
+    /**
+     * Run validations with async functions
+     * @return {boolean|ObjectValidator}
+     * @param $object
+     * @param $rules
+     * @param $returnValidator
+     */
+    validateAsync($object, $rules, $returnValidator = false) {
+        return this.validate($object, $rules, $returnValidator, true);
+    }
+
+    /**
+     * Set event handlers
+     * @param {string} key
+     * @param {function} value
+     */
+    setEventHandler(key, value) {
+        if (typeof key === 'object') {
+            let keys = Object.keys(functions);
+            for (let i = 0; i < keys.length; i++) {
+                let _function = keys[i];
+                this.setEventHandler(_function, functions[_function]);
+            }
+        } else {
+            this.eventHandlers[key] = value
+        }
+
+    }
+}
+
+OVP.prototype.eventHandlers = {};
+OVP.prototype.validators = {};
+OVP.prototype.validatorErrors = {};
+OVP.prototype.validatorEngine = () => {
 };
 
 
-/**
- * Run validations with async functions
- * @return {boolean|ObjectValidator}
- * @param $object
- * @param $rules
- * @param $returnValidator
- */
-const validateAsync = function ($object, $rules, $returnValidator = false) {
-    return validate($object, $rules, $returnValidator, true);
-};
-
-
-module.exports = {validate, validateAsync, Validator};
+module.exports = OVP;

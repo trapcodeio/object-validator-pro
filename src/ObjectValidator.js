@@ -7,7 +7,7 @@ _.get = require('lodash/get');
 _.has = require('lodash/has');
 _.unset = require('lodash/unset');
 
-let validators = require('./validators');
+let defaultValidators = require('./validators');
 let errorMessages = require('./errors');
 let validatorExtenders = {};
 
@@ -38,62 +38,8 @@ let ObjectValidatorFunctions = {
      * @param {string} param
      * @param {string} msg
      */
-    onEachError(param, msg) {}
-};
-
-
-let ObjectValidatorEngine = {
-    /**
-     * Parse Error Messages
-     * @param $rule
-     * @param $name
-     * @param $option
-     * @return {string}
-     */
-    parseMessage($rule, $name, $option) {
-        let msg = errorMessages.default;
-
-        if (errorMessages.hasOwnProperty($rule)) {
-            msg = errorMessages[$rule];
-        }
-
-        msg = msg.replace(':param', $name);
-
-        if (typeof $option != 'function') {
-            msg = msg.replace(':option', $option);
-        }
-
-        return msg;
-    }
-};
-
-const ObjectValidatorEditor = {
-    /**
-     * Add Validators
-     * @param {{name: String, validator: Function}[]} $validators - Array of custom validators.
-     * @param {string} $validators[].name - The name of this validator.
-     * @param {string} $validators[].error - The error of this validator.
-     * @param {string} $validators[].validator - The function of this validator.
-     * @param {string} $validators[].extendValidator - The extension of this validator.
-     */
-    addValidators($validators) {
-        if (!Array.isArray($validators) && typeof $validators === 'object') {
-            $validators = [$validators];
-        }
-
-        for (let i = 0; i < $validators.length; i++) {
-            let validator = $validators[i];
-
-            if (validator.hasOwnProperty('error') && validator.error.length) {
-                errorMessages[validator.name] = validator.error
-            }
-
-            if (typeof validator['extendValidator'] === 'function' && typeof validator['name'] === 'string') {
-                validatorExtenders[validator.name] = validator.extendValidator;
-            } else if (typeof validator['validator'] === 'function') {
-                validators[validator.name] = validator.validator;
-            }
-        }
+    onEachError(param, msg) {
+        // console.log([param, msg]);
     }
 };
 
@@ -184,7 +130,13 @@ class ObjectValidator {
      * @constructor
      * @return {ObjectValidator}
      * */
-    constructor($object) {
+    constructor($object, $data) {
+        let {handlers, validators, errors} = $data;
+
+        this.defaultEventHandlers = _.extend({}, ObjectValidatorFunctions, handlers);
+        this.validators = _.extend({}, defaultValidators, validators);
+        this.errors = _.extend({}, errorMessages, errors);
+
         return this.setObject($object);
     }
 
@@ -222,7 +174,7 @@ class ObjectValidator {
         if (typeof functions === 'function')
             functions = {yes: functions};
 
-        this.functions = _.extend({}, ObjectValidatorFunctions, functions);
+        this.functions = _.extend({}, this.defaultEventHandlers, functions);
         return this;
     }
 
@@ -247,7 +199,7 @@ class ObjectValidator {
         let validateWith = this.validateWith;
 
         if (this.functions === undefined) {
-            this.functions = ObjectValidatorFunctions;
+            this.functions = this.defaultEventHandlers;
         }
 
         let functions = this.functions;
@@ -343,7 +295,7 @@ class ObjectValidator {
                         let isValid;
 
 
-                        if (validators.hasOwnProperty(rule)) {
+                        if (this.validators.hasOwnProperty(rule)) {
                             isValid = this.___validationIsValid(rule, param, options);
 
                             if (isValid === false) {
@@ -376,9 +328,9 @@ class ObjectValidator {
         const oov = new ObjectOnValidation($object, param);
 
         if (validatorExtenders.hasOwnProperty(rule)) {
-            isValid = validatorExtenders[rule](validators[rule], value, options, oov);
+            isValid = validatorExtenders[rule](this.validators[rule], value, options, oov);
         } else {
-            isValid = validators[rule](value, options, oov);
+            isValid = this.validators[rule](value, options, oov);
         }
 
         return isValid;
@@ -394,9 +346,25 @@ class ObjectValidator {
             }
 
 
-            let msg = ObjectValidatorEngine.parseMessage(rule, name, options);
+            let msg = this.___parseMessage(rule, name, options);
             functions.onEachError(param, msg);
         }
+    }
+
+    ___parseMessage($rule, $name, $option) {
+        let msg = this.errors.default;
+
+        if (this.errors.hasOwnProperty($rule)) {
+            msg = this.errors[$rule];
+        }
+
+        msg = msg.replace(':param', $name);
+
+        if (typeof $option != 'function') {
+            msg = msg.replace(':option', $option);
+        }
+
+        return msg;
     }
 }
 
@@ -404,139 +372,10 @@ ObjectValidator.prototype.data = {};
 ObjectValidator.prototype.validateWith = {};
 ObjectValidator.prototype.functions = undefined;
 
-/**
- * Validator Class
- * @class
- * @property {Object} $data - Object containing validator options
- */
-class Validator {
-    /**
-     * @constructor
-     * @param {string|object} name
-     * @param {function} validator
-     * @param {*} error
-     * @param {boolean} save
-     * @return {Validator}
-     */
-    constructor(name, validator = null, error = '', save = true) {
-        this.autoSave = save;
+// Imported via constructor
+ObjectValidator.prototype.defaultEventHandlers = {};
+ObjectValidator.prototype.validators = {};
+ObjectValidator.prototype.errors = {};
 
-        if (typeof name === 'object') {
-            this.$data = name;
-            if (save) this.save();
-        } else {
-            this.$data.name = name;
-            if (typeof validator === 'function') this.$data.validator = validator;
-            if (typeof error === 'string') this.$data.error = error;
 
-            if (validator !== null && error !== null) {
-                if (save) this.save();
-            }
-        }
-
-        return this;
-    }
-
-    /**
-     * Set Validator
-     * @param {function} validator
-     */
-
-    validator(validator) {
-        this.$data.validator = validator;
-
-        if (this.autoSave) {
-            return this.save();
-        }
-
-        return this;
-    }
-
-    /**
-     * Set Validator Error
-     * @param {string} error
-     * @return {Validator}
-     */
-    error(error) {
-        this.$data.error = error;
-        return this;
-    }
-
-    /**
-     * Set Validator Data
-     * @param {string} key
-     * @param {*} value
-     * @return {Validator}
-     */
-    set(key, value) {
-        this.$data[key] = value;
-        return this;
-    }
-
-    /**
-     * Add to validators
-     */
-    save() {
-        ObjectValidatorEditor.addValidators([
-            this.$data
-        ]);
-    }
-
-    /**
-     * Returns Validator $data
-     * @return {object} Validator.$data
-     */
-    getData() {
-        return this.$data;
-    }
-
-    /**
-     * Add Bulk Validators
-     * @param {array} validators
-     */
-    static addBulk(validators) {
-        ObjectValidatorEditor.addValidators(validators);
-    }
-
-    /**
-     * Add Bulk Validators
-     * @param name
-     * @param validator
-     * @param error
-     */
-    static make(name, validator, error = null) {
-        return new Validator(name, validator, error, false).getData();
-    }
-
-    /**
-     * Override Validator Default Function
-     * @param {string} key
-     * @param {function} value
-     */
-    static overrideDefaultFunction(key, value) {
-        if (ObjectValidatorFunctions.hasOwnProperty(key)) {
-            ObjectValidatorFunctions[key] = value
-        }
-    }
-
-    /**
-     * Override Validator Default Functions
-     * @param {object} functions
-     */
-    static overrideDefaultFunctions(functions) {
-        let keys = Object.keys(functions);
-        for (let i = 0; i < keys.length; i++) {
-            let _function = keys[i];
-            Validator.overrideDefaultFunction(_function, functions[_function]);
-        }
-    }
-}
-
-Validator.prototype.$data = {
-    name: '',
-    error: '',
-    validator: null
-};
-Validator.prototype.autoSave = true;
-
-module.exports = {_, ObjectValidator, validators, Validator};
+module.exports = {_, ObjectValidator};
