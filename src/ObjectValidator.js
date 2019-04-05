@@ -38,9 +38,7 @@ let ObjectValidatorFunctions = {
      * @param {string} param
      * @param {string} msg
      */
-    onEachError(param, msg) {
-        console.log([param, msg])
-    }
+    onEachError(param, msg) {}
 };
 
 
@@ -303,7 +301,7 @@ class ObjectValidator {
     /**
      * Run Validation Object
      * @return {boolean}
-     * @private
+     * @protected
      */
     ___runValidation() {
         let {functions, validateWith} = this.beforeValidation();
@@ -348,7 +346,7 @@ class ObjectValidator {
                         if (validators.hasOwnProperty(rule)) {
                             isValid = this.___validationIsValid(rule, param, options);
 
-                            if (!isValid) {
+                            if (isValid === false) {
                                 foundError = true;
                                 this.___runOnEachError(functions, rules, rule, param, options);
                                 return false;
@@ -386,15 +384,7 @@ class ObjectValidator {
         return isValid;
     }
 
-    /**
-     * Internal Function
-     * @param functions
-     * @param rules
-     * @param rule
-     * @param param
-     * @param options
-     * @private
-     */
+
     ___runOnEachError(functions, rules, rule, param, options) {
         if (functions.hasOwnProperty('onEachError')) {
             let name = _.startCase(param);

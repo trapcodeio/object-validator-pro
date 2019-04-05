@@ -71,7 +71,7 @@ class AsyncObjectValidator extends ObjectValidator {
                             }
 
 
-                            if (!isValid) {
+                            if (isValid === false) {
                                 foundError = true;
 
                                 this.___runOnEachError(functions, rules, rule, param, options);
