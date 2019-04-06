@@ -2,9 +2,15 @@ let validators = {
     /**
      * @private
      * @param value
+     * @param option
      * @return {boolean}
      */
-    must(value) {
+    must(value, option) {
+
+        if(option===false){
+            return true;
+        }
+
         if (typeof value === "undefined") {
             return false;
         } else if (typeof value === 'string' || Array.isArray(value)) {

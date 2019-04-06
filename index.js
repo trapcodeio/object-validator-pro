@@ -1,8 +1,6 @@
-const Validator = require('./src/Validator');
-let {
-    _,
-    ObjectValidator
-} = require('./src/ObjectValidator');
+let {_, ObjectValidator} = require('./src/ObjectValidator');
+let Validator = require('./src/Validator');
+
 
 /**
  * Extends ObjectValidator to create an async validation.
@@ -204,5 +202,7 @@ OVP.prototype.validatorErrors = {};
 OVP.prototype.validatorEngine = () => {
 };
 
-
+/**
+ * @type {OVP}
+ */
 module.exports = OVP;
