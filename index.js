@@ -138,7 +138,6 @@ class OVP {
     /**
      * ShortHand Validator Function
      * @name validate
-     * @function
      * @param {object} $object - Object to be validator
      * @param {object} $rules - Rules for validation
      * @param {boolean|Object|Function} $returnValidator - Should return validator.
