@@ -102,12 +102,34 @@ class OVP {
         this.validatorEngine = Validator(this)
     }
 
-    addValidator(...args) {
-        return new this.validatorEngine(...args);
+    /**
+     * @constructor
+     * @param {string|object} name
+     * @param {function} validator
+     * @param {*} error
+     * @return {Validator}
+     */
+    addValidator(name, validator = null, error = '') {
+        return new this.validatorEngine(name, validator, error);
     }
 
-    makeValidator(...args){
-        return this.validatorEngine.make(...args);
+
+    /**
+     * Add Bulk Validators
+     * @param name
+     * @param validator
+     * @param error
+     */
+    makeValidator(name, validator, error = null) {
+        return this.validatorEngine.make(name, validator, error);
+    }
+
+    /**
+     * Add Bulk Validators
+     * @param {array} validators
+     */
+    addBulk(validators) {
+        return this.validatorEngine.addBulk(validators);
     }
 
     /**
@@ -159,7 +181,8 @@ class OVP {
      */
     setEventHandler(key, value) {
         if (typeof key === 'object') {
-            let keys = Object.keys(functions);
+            const functions = key;
+            const keys = Object.keys(functions);
             for (let i = 0; i < keys.length; i++) {
                 let _function = keys[i];
                 this.setEventHandler(_function, functions[_function]);
@@ -167,7 +190,6 @@ class OVP {
         } else {
             this.eventHandlers[key] = value
         }
-
     }
 }
 

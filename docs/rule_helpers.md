@@ -94,14 +94,14 @@ The `onEachError` event has a default out of the box function that logs the erro
 
 These events can be handled both globally and on each `validate` call.
 
-Lets override the default `onEachError`. This can be done using `Validator.overrideDefaultFunction(key, function)`
+Lets override the default `onEachError`. This can be done using `.setEventHandler(name, function)`
 
-`key`: Name of default function to override.
+`name`: Name of default function to override.
 
 `function`: Function to be replaced with. 
 
 ```javascript
-Validator.overrideDefaultFunction('onEachError', (param, msg) => {
+ovp.setEventHandler('onEachError', (param, msg) => {
     console.log('===> ', '{' + param + '}', msg)
 });
 
@@ -118,7 +118,7 @@ let rules = {
     password: {minLength: 10}
 };
 
-let check = validate(data, rules);
+let check = ovp.validate(data, rules);
 
 // returns: false
 // log: ===> {username} Username is not typeOf string
@@ -128,7 +128,7 @@ All validations will use default event handlers unless a custom error handler is
 
 ```javascript
 // set custom handler per validation
-check = validate(data, rules, {
+check = ovp.validate(data, rules, {
     onEachError(param, msg) {
         console.log('Custom onEach Error ===> ', '{' + param + '}', msg)
     }
@@ -141,7 +141,7 @@ check = validate(data, rules, {
 // set username to string
 data.username = 'NodeJs';
 
-check = validate(data, rules);
+check = ovp.validate(data, rules);
 
 // returns: false
 // log: {password} Password is too short. (Min. 10 characters)
@@ -160,7 +160,7 @@ let eventHandlers = {
    onEachError(param, msg) {}
 };
 
-check = validate(data, rules, eventHandlers);
+check = ovp.validate(data, rules, eventHandlers);
 ```
 
 `yes`: will run when all validation is successful. `check` will still return `boolean`.

@@ -8,10 +8,10 @@ Before you dive into the **core**, lets tell you the basics.
 The `validate` function expects min: 2 and max: 3 arguments
 
 ```
-let isValid = validate(objectToValidate, Rules, yesFunctionOrObject?);
+let isValid = ovp.validate(object, rules, yesFunctionOrObject?);
 ```
 
-`objectToValidate`: The object to validate.
+`object`: The object to validate.
 
 `rules`: Rules ovp understands and uses to validate for you.
 
@@ -53,7 +53,7 @@ let rule = {
 };
 
 
-let isValid = validate(ourObject, rule);
+let isValid = ovp.validate(ourObject, rule);
 console.log(isValid);
 ```
 
@@ -79,7 +79,7 @@ lets modify `ourObject`
 ourObject.email = ['an array instead of a string'];
 
 // Rerun validation
-let isValid = validate(ourObject, rule);
+let isValid = ovp.validate(ourObject, rule);
 console.log(isValid);
 ```
 ```
@@ -94,7 +94,7 @@ From the error message above you can tell that the `typeOf: 'string'` rule stopp
 ourObject.email = 'user@example.com';
 
 // Rerun validation
-let isValid = validate(ourObject, rule);
+let isValid = ovp.validate(ourObject, rule);
 console.log(isValid);
 ```
 ```
@@ -110,7 +110,7 @@ false
 ourObject.age = 30;
 
 // Rerun validation
-let isValid = validate(ourObject, rule);
+let isValid = ovp.validate(ourObject, rule);
 console.log(isValid);
 // logs
 true
@@ -121,7 +121,7 @@ You can pass a `yes` callback function to run once all validation are successful
 
 ```javascript
 // Rerun validation
-let isValid = validate(ourObject, rule, (object) => {
+let isValid = ovp.validate(ourObject, rule, (object) => {
     console.log(object.hobbies);
 });
 console.log(isValid);

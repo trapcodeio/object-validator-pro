@@ -17,7 +17,7 @@ provides a great **CDN** service that serves you a minified version of OVP.
 
 ```javascript
 // Bundle.run sets `window['objectValidatorPro']`;
-const {validate, validateAsync, Validator} = window['objectValidatorPro'];
+const ovp = new window['objectValidatorPro'];
 ```
 
 
@@ -36,30 +36,26 @@ yarn add object-validator-pro
 
 After Installation you can **require** or **import** ovp into your script.
 ```javascript
-const {validate, validateAsync, Validator} = require("object-validator-pro");
+const OVP = require("object-validator-pro");
 ```
 
 **OR**
 
 ```javascript
-import {validate, validateAsync, Validator} from "object-validator-pro";
+import OVP from "object-validator-pro";
 ```
 
 
 #### What is Returned?
-OVP returns object `{validate, validateAsync, Validator}`
+OVP returns object `OVP` class.
 
-##### validate
-Function to run validations on an object with rules, returns `boolean`
+The `OVP` class includes 3 important functions
 
-##### validateAsync
-Function to run Async validations using `await`, returns `Promise<boolean>`
-
-##### Validator
-`new Validator` to create/add your custom validators.
-
-`Validator` Also contains static helper objects.
-
+| Function | Description |
+| -------- | ----------- |
+| `validate`  | Function to run validations on an object with rules, returns `boolean` |
+| `validateAsync`  | Function to run Async validations using `await`, returns `Promise<boolean>` |
+| `addValidator`  | Create/Add your custom validators. |
 
 -----
 [How it works >](how_it_works.md)

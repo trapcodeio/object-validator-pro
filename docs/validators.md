@@ -6,8 +6,8 @@
 Creating powerful validators is very easy with OVP.
 
 ```javascript
-// having imported {validate, Validator}
-new Validator(name, validationFn, error);
+// having initialized OVP
+ovp.addValidator(name, validationFn, error);
 ```
 
 | Argument          | Description |
@@ -32,7 +32,7 @@ Your `validationFn` must return `true` or `false` and receives 3 arguments on va
 
 ```javascript
 // First we create a validator named: MyValidator
-new Validator('myValidator', (...args) => {
+ovp.addValidator('myValidator', (...args) => {
     console.log(args);
     return false;
 }, ':param failed myValidator');
@@ -58,7 +58,7 @@ let rule = {
 
 
 // Run Validation
-let isValid = validate(ourObject, rule);
+let isValid = ovp.validate(ourObject, rule);
 console.log(isValid);
 ```
 
@@ -76,19 +76,15 @@ The log above explains that `val` argument in `validationFn` is the value of the
 
 Lets a create validator that checks if `ourObject.hobbies` has an item "drink" and another validator that checks if `ourObject.website.url` has "http://"
 ```javascript
-new Validator('NoDrinkInHobbies', (hobbies) => {
-    if(hobbies.indexOf('drink') >= 0){
+ovp.addValidator('NoDrinkInHobbies', (hobbies) => {
+    if(hobbies.indexOf('drink') >= 0) {
         return false;
-    } else {
-        return true;
     }
 }, 'Drink found in :param');
 
-new Validator('hasHttp', (url) => {
+ovp.addValidator('hasHttp', (url) => {
     if(url.substr(0, 7) !== 'http://'){
         return false;
-    } else {
-        return true;
     }
 }, ':param must start with http://');
 
@@ -100,14 +96,14 @@ let rule = {
 };
 
 // Run Validation
-isValid = validate(ourObject, rule);
+isValid = ovp.validate(ourObject, rule);
 console.log(isValid);
 
 // Assuming...
 ourObject.hobbies = ['eat', 'code', 'sleep', 'drink'];
 
 // Rerun Validation
-isValid = validate(ourObject, rule);
+isValid = ovp.validate(ourObject, rule);
 console.log(isValid);
 ```
 ```
@@ -129,21 +125,21 @@ e.g  Instead of stopping the above process because `website.url` does not have "
 
 ```javascript
 // lets add a different validator
-new Validator('addProtocol', (url, protocol, obj) => {
+ovp.addValidator('addProtocol', (url, protocol, obj) => {
     protocol = protocol + '://';
-    if (url.substr(0, protocol.length) !== protocol)
+    if (url.substr(0, protocol.length) !== protocol){
         obj.setThis(protocol + url);
-    return true;
+    }
 });
 
-validate(ourObject, {
+ovp.validate(ourObject, {
     'website.url': { addProtocol: 'ftp' }
 });
 console.log(ourObject.website.url);
 // logs: ftp://some-blog-in-3030.com
 
 // Rerun with http instead
-validate(ourObject, {
+ovp.validate(ourObject, {
     'website.url': { addProtocol: 'http' }
 });
 console.log(ourObject.website.url);
@@ -183,7 +179,7 @@ Lets check if `website.url` is a valid url using [`axios`](https://www.npmjs.com
 const axios = require('axios');
 
 // lets add urlIsOnline Async validator.
-new Validator('urlIsOnline', async (value) => {
+ovp.addValidator('urlIsOnline', async (value) => {
     try{
         await axios.get(value);
         return true;
@@ -200,12 +196,12 @@ let asyncRule = {
     'url': {addProtocol: 'https', 'urlIsOnline': true}
 };
 
-validateAsync(asyncTestData, asyncRule).then((isValid) => {
+ovp.validateAsync(asyncTestData, asyncRule).then((isValid) => {
     // isValid is false;
 });
 
 // if you are in an async function you can use await instead
-let isValid = await validateAsync(asyncTestData, asyncRule);
+let isValid = await ovp.validateAsync(asyncTestData, asyncRule);
 // isValid is false;
 ``` 
 
@@ -214,15 +210,15 @@ let isValid = await validateAsync(asyncTestData, asyncRule);
 You should change the url to "google.com" and `urlIsOnline` will return `true`.
 
 #### Adding Bulk Validators
-You can set more than one custom validator using the `Validator.addBulk(arrayOfValidators)`
+You can set more than one custom validator using the `ovp.addBulk(arrayOfValidators)`
 
-`Validator.make`: returns the object data of a validator, works just like the `new Validator` function but returns the validators data instead of setting them. 
+`ovp.makeValidator()`: returns the object data of a validator, works just like the `new Validator` function but returns the validators data instead of setting them. 
 
 See example below to see how it works.
 
 ```javascript
-// Using Validator.make method
-let emailValidator = Validator.make('isEmail', (email) => {
+// Using ovp.makeValidator method
+let emailValidator = ovp.makeValidator('isEmail', (email) => {
     return (typeof email === "string" && email.length>5 && email.includes('@'));
 }, ':param does not look like an email');
 
@@ -245,7 +241,7 @@ let arrayOfValidators = [
         }
     },
 
-    // Using Validator.make method Object from above
+    // Using ovp.makeValidator method Object from above
     emailValidator,
 ];
 
@@ -265,7 +261,7 @@ returns: =====>
 */
 
 
-Validator.addBulk(arrayOfValidators);
+ovp.addBulk(arrayOfValidators);
 ```
 
 The data return by `emailValidator` in the console results is the same with the Objects manually declared in `arrayOfValidators` 
@@ -275,31 +271,31 @@ So you can populate `arrayOfValidators` any which way you find preferable.
 #### Modifying Validators
 Lets say for some reason you want to overwrite a validator that has been defined somewhere or somehow.
 
-You can simply create a new validator with new function and error but same name. like below.
+You can simply create a new validator with new validator function and error but same name. like below.
 ```javascript
 // Old validator.
-new Validator('checkName', () => {
+ovp.addValidator('checkName', () => {
     return true;
 }, '1st Error message.');
 
 // Overwrite using this.
-new Validator('checkName', () => {
+ovp.addValidator('checkName', () => {
     return false;
 }, 'Overwritten Error message.');
 ```
 
 The above will work perfectly but OVP also includes an easy method to modify validators.
 
-using `new Validator(name)` with only name as argument enables modification or creation using `.save()`  
+using `ovp.addValidator(name)` with only name as argument enables modification or creation using `.save()`  
 
 ```javascript
 // Modify only validationFn
-new Validator('checkName').validator(() => {
+ovp.addValidator('checkName').validator(() => {
     return true;
 }).save();
 
 // Modify only error
-new Validator('checkName').error('New Error Message.').save();
+ovp.addValidator('checkName').error('New Error Message.').save();
 ```
 
 You can use any style you feel comfortable with.
