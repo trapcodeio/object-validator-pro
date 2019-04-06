@@ -97,6 +97,11 @@ class AsyncObjectValidator extends ObjectValidator {
     }
 }
 
+/**
+ * OVP Engine
+ * @name OVP
+ * @class
+ */
 class OVP {
     constructor() {
         this.validatorEngine = Validator(this)
