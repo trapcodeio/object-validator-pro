@@ -9,6 +9,8 @@ _.unset = require('lodash/unset');
 
 let defaultValidators = require('./validators');
 let errorMessages = require('./errors');
+const strToObj = require('./StringToObject');
+
 let validatorExtenders = {};
 
 const config = {
@@ -146,10 +148,21 @@ class ObjectValidator {
 
     /**
      * Set Validator Rules
+     *
+     * Converts text rules to object.
+     *
      * @param {object} validateWith
      * @return {ObjectValidator}
      */
     rules(validateWith) {
+        let objectKeys = Object.keys(validateWith);
+
+        for (let i = 0; i < objectKeys.length; i++) {
+            const objectKey = objectKeys[i];
+            if(typeof validateWith[objectKey] === "string"){
+                validateWith[objectKey] = strToObj(validateWith[objectKey])
+            }
+        }
         this.validateWith = validateWith;
         return this;
     }
