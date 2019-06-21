@@ -7,15 +7,16 @@ let validators = {
      */
     must(value, option) {
 
-        if(option===false){
+        if (option === false) {
             return true;
         }
 
-        if (typeof value === "undefined") {
+        if (typeof value === "undefined" || value === null) {
             return false;
         } else if (typeof value === 'string' || Array.isArray(value)) {
             return value.length > 0
         }
+
         return true;
     },
 
@@ -49,7 +50,12 @@ let validators = {
      * @return {boolean}
      */
     min(value, option) {
-        if (typeof value === 'string') return validators.minLength(value, option);
+        if (typeof value === 'string' || !Array.isArray(value))
+            return validators.minLength(value, option);
+
+        if (isNaN(Number(value)))
+            return false;
+
         value = parseFloat(value);
         option = parseFloat(option);
         return value >= option;
@@ -62,7 +68,12 @@ let validators = {
      * @return {boolean}
      */
     max(value, option) {
-        if (typeof value === 'string') return validators.maxLength(value, option);
+        if (typeof value === 'string' || !Array.isArray(value))
+            return validators.maxLength(value, option);
+
+        if (isNaN(Number(value)))
+            return false;
+
         value = parseFloat(value);
         option = parseFloat(option);
         return value <= option;
@@ -75,6 +86,8 @@ let validators = {
      * @return {boolean}
      */
     minLength(value, option) {
+        if (typeof value !== 'string' && !Array.isArray(value)) return false;
+
         value = validators.___trimIfString(value);
         return value.length >= option;
     },
@@ -86,6 +99,8 @@ let validators = {
      * @return {boolean}
      */
     maxLength(value, option) {
+        if (typeof value !== 'string' && !Array.isArray(value)) return false;
+
         value = validators.___trimIfString(value);
         return value.length <= option;
     },
