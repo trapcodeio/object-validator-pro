@@ -159,10 +159,11 @@ class ObjectValidator {
 
         for (let i = 0; i < objectKeys.length; i++) {
             const objectKey = objectKeys[i];
-            if(typeof validateWith[objectKey] === "string"){
+            if (typeof validateWith[objectKey] === "string") {
                 validateWith[objectKey] = strToObj(validateWith[objectKey])
             }
         }
+
         this.validateWith = validateWith;
         return this;
     }
@@ -246,6 +247,7 @@ class ObjectValidator {
             let newValidateWith = {};
 
             for (let i = 0; i < objectKeys.length; i++) {
+
                 let objectKey = objectKeys[i];
                 if (typeof validateWith[objectKey] === 'undefined') {
                     newValidateWith[objectKey] = validateWith[config.wildcard];
@@ -334,7 +336,7 @@ class ObjectValidator {
     }
 
     ___validationIsValid(rule, param, options) {
-        let isValid = false;
+        let isValid;
         let $object = this.data;
         let value = _.get($object, param);
 

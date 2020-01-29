@@ -1,4 +1,4 @@
-let errors = {
+const errors = {
     default: ':param returned :false',
     must: ':param is required.',
     typeOf: ':param is not typeOf :option',

@@ -50,15 +50,22 @@ let validators = {
      * @return {boolean}
      */
     min(value, option) {
-        if (typeof value === 'string' || !Array.isArray(value))
+        const isNotNumber = isNaN(value);
+
+        /**
+         * if is string and string is not a valid number,
+         * or if value is a valid array
+         * we pass the validation to `minLength`
+         */
+        if ((typeof value === "string" && isNotNumber) || Array.isArray(value))
             return validators.minLength(value, option);
 
-        if (isNaN(Number(value)))
+        // return false if this is not a number
+        if (isNotNumber)
             return false;
 
-        value = parseFloat(value);
-        option = parseFloat(option);
-        return value >= option;
+        // Parse to float and compare
+        return parseFloat(value) >= parseFloat(option);
     },
 
     /**
@@ -68,15 +75,22 @@ let validators = {
      * @return {boolean}
      */
     max(value, option) {
-        if (typeof value === 'string' || !Array.isArray(value))
+        const isNotNumber = isNaN(value);
+
+        /**
+         * if is string and string is not a valid number,
+         * or if value is a valid array
+         * we pass the validation to `minLength`
+         */
+        if ((typeof value === "string" && isNotNumber) || Array.isArray(value))
             return validators.maxLength(value, option);
 
-        if (isNaN(Number(value)))
+        // return false if this is not a number
+        if (isNotNumber)
             return false;
 
-        value = parseFloat(value);
-        option = parseFloat(option);
-        return value <= option;
+        // Parse to float and compare
+        return parseFloat(value) <= parseFloat(option);
     },
 
     /**
